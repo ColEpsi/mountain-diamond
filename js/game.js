@@ -20,7 +20,7 @@ function startGame(){
   var engine = new BABYLON.Engine(canvas, true);
   // -------------------------------------------------------------
   // Here begins a function that we will 'call' just after it's built
-  var mesh;
+  
 
   var createScene = function() {
     // scene objekt
@@ -41,13 +41,13 @@ function startGame(){
     spot.specular = new BABYLON.Color3(0, 0, 0);
     spot.intensity = 0.8;
     // import mesh
-    
+    var mesh;
     BABYLON.SceneLoader.ImportMesh("", "", "assets/sinon-sword-art-online.babylon", scene, function (newMeshes) {
     
     // Set the target of the camera to the first imported mesh
     camera.target = newMeshes[0];
     mesh = newMeshes[0];
-    newMeshes[0].material = new BABYLON.StandardMaterial("skull", scene);
+    newMeshes[0].material = new BABYLON.StandardMaterial("model", scene);
     newMeshes[0].material.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
     newMeshes[0].scaling.x = 1.5;
     newMeshes[0].scaling.y = 1.5;
@@ -56,6 +56,51 @@ function startGame(){
     newMeshes[0].rotation.y = glMatrix.toRadian(180);
     newMeshes[0].position.z = progress;
 
+
+    // Creation of a basic animation with mesh
+    //----------------------------------------
+
+    var animationMesh = new BABYLON.Animation("moving", "position.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+                                                                    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    // Animation keys
+    var keys = [];
+    keys.push({
+        frame: 0,
+        value: -950
+    });
+
+    keys.push({
+        frame: 400,
+        value: 950
+    });
+
+    animationMesh.setKeys(keys);
+
+    mesh.animations.push(animationMesh);
+
+    scene.beginAnimation(mesh, 0, 400, true);
+  
+  // Blending animation
+    var animation2Mesh = new BABYLON.Animation("moving", "position.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+  BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+                                
+  animation2Mesh.enableBlending = true;
+  animation2Mesh.blendingSpeed = 0.01;
+    // Animation keys
+    var keys = [];
+    keys.push({
+        frame: 0,
+        value: -950
+    });
+
+    keys.push({
+        frame: 400,
+        value: 950
+    });
+    animation2Mesh.setKeys(keys);
+  
+ 
+    scene.beginDirectAnimation(mesh, [animation2Mesh], 0, 400, true);
     });
 
     var leafMaterial = new BABYLON.StandardMaterial("leafMaterial", scene);
@@ -143,8 +188,8 @@ function startGame(){
       return tree;
 
   };
-  	var ground = BABYLON.Mesh.CreatePlane("Plane", 200, scene);
-  	ground.rotation.x = 1.57;
+    var ground = BABYLON.Mesh.CreatePlane("Plane", 200, scene);
+    ground.rotation.x = glMatrix.toRadian(90);
     ground.scaling.y = 10;
     var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
     groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/field-of-dimpled-snow.jpg", scene);
@@ -165,21 +210,28 @@ function startGame(){
       var tree = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
       tree.position.x = randomNumber(-100, 100);
       tree.position.z = randomNumber(-1000, 1000);
+      tree.checkCollisions = true;
       trees.push(tree);
     }
 
-  	var tree1 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
-    	tree1.position.x = 20;
+    var tree1 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
+      tree1.position.x = 20;
 
-    	var tree2 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
-    	tree2.position.x = -20; 
+      var tree2 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
+      tree2.position.x = -20; 
 
-    	var tree3 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
-    	tree3.position.z = 20;  
+      var tree3 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
+      tree3.position.z = 20;  
 
-    	var tree4 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
-    	tree4.position.x = 25; 
-    	tree4.position.z = -20; 
+      var tree4 = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
+      tree4.position.x = 25; 
+      tree4.position.z = -20; 
+
+    scene.collisionsEnabled = true;
+    camera.checkCollisions = true;
+
+    tree1.checkCollisions = true;
+
 
     window.addEventListener('keydown', function(event) {
       switch (event.keyCode) {
@@ -200,11 +252,12 @@ function startGame(){
           break;
       }
     }, false);
-    	return scene;
+      return scene;
   };
+
   var scene = createScene();
   engine.runRenderLoop(function(){
-  	scene.render();
+    scene.render();
   });
 
   // Watch for browser/canvas resize events
@@ -213,7 +266,3 @@ function startGame(){
   });
 
 }
-
-
-
-

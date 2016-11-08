@@ -42,18 +42,18 @@ function startGame(){
     spot.intensity = 0.8;
     // import mesh
     var mesh;
-    BABYLON.SceneLoader.ImportMesh("", "", "assets/sinon-sword-art-online.babylon", scene, function (newMeshes) {
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/diaMontiffe.babylon", scene, function (newMeshes) {
     
     // Set the target of the camera to the first imported mesh
     camera.target = newMeshes[0];
     mesh = newMeshes[0];
     newMeshes[0].material = new BABYLON.StandardMaterial("model", scene);
     newMeshes[0].material.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-    newMeshes[0].scaling.x = 1.5;
-    newMeshes[0].scaling.y = 1.5;
-    newMeshes[0].scaling.z = 1.5;
-    newMeshes[0].position.y = 6;
-    newMeshes[0].rotation.y = glMatrix.toRadian(180);
+    newMeshes[0].scaling.x = 0.5;
+    newMeshes[0].scaling.y = 0.5;
+    newMeshes[0].scaling.z = 0.5;
+    //newMeshes[0].position.y = 6;
+    //newMeshes[0].rotation.y = glMatrix.toRadian(180);
     newMeshes[0].position.z = progress;
 
 
@@ -70,7 +70,7 @@ function startGame(){
     });
 
     keys.push({
-        frame: 600,
+        frame: 400,
         value: 950
     });
 
@@ -78,7 +78,7 @@ function startGame(){
 
     mesh.animations.push(animationMesh);
 
-    scene.beginAnimation(mesh, 0, 600, true);
+    scene.beginAnimation(mesh, 0, 400, true);
   
   // Blending animation
     var animation2Mesh = new BABYLON.Animation("moving", "position.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
@@ -94,13 +94,13 @@ function startGame(){
     });
 
     keys.push({
-        frame: 600,
+        frame: 400,
         value: 950
     });
     animation2Mesh.setKeys(keys);
   
  
-    scene.beginDirectAnimation(mesh, [animation2Mesh], 0, 600, true);
+    scene.beginDirectAnimation(mesh, [animation2Mesh], 0, 400, true);
     });
 
     var leafMaterial = new BABYLON.StandardMaterial("leafMaterial", scene);

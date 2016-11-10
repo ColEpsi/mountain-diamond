@@ -93,6 +93,21 @@ function startGame(){
     backgroundRight.rotation.y = glMatrix.toRadian(90);
     backgroundRight.material = backgroundMaterial;
 
+    /*
+    var skybox = BABYLON.Mesh.CreateBox("skyBox", 3000.0, scene);
+    var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.disableLighting = true;
+    skybox.material = skyboxMaterial;
+    skybox.infiniteDistance = true;
+    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/sky32", scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    
+    skybox.position.y = 5;
+  */
 
     
     for(var i = 0; i < 50; i++){

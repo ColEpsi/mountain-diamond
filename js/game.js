@@ -1,5 +1,5 @@
 // Get the canvas element from our HTML below
-
+var slope = 10;
 document.addEventListener("DOMContentLoaded", function () {
   if (BABYLON.Engine.isSupported()) {
     startGame();
@@ -53,6 +53,7 @@ function startGame(){
         dia.scaling.y = 0.5;
         dia.scaling.z = 0.5;
         dia.position.z = -950;
+				dia.position.y = -dia.position.z * glMatrix.toRadian(1);
     });
   
     BABYLON.SceneLoader.ImportMesh("", "", "assets/rock.babylon", scene, function (newMeshes) {
@@ -69,11 +70,12 @@ function startGame(){
     var woodMaterial = new BABYLON.StandardMaterial(name, scene);
     woodMaterial.diffuseColor = new BABYLON.Color3(0.627451, 0.321569, 0.176471);
 
-    var ground = BABYLON.Mesh.CreateGround("ground1", 800, 2000, 2, scene);
+    //var ground = BABYLON.Mesh.CreateGround("ground1", 800, 2000, 2, scene);
     var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
     groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
     var ghm = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "lightning.png", 800, 2000, 3, 0.1, 0.5, scene, false); //ime, url, width, height, subdivizije, minH, maxH 
     ghm.material = groundMaterial;
+		ghm.rotation.x = glMatrix.toRadian(slope);
 
     var leftWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);
     leftWall.position.x = -400;
@@ -108,10 +110,12 @@ function startGame(){
   */
 
     
-    for(var i = 0; i < 50; i++){
+    for(var i = 0; i < 300; i++){
       var tree = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
-      tree.position.x = randomNumber(-100, 100);
+      tree.position.x = randomNumber(-400, 400);
       tree.position.z = randomNumber(-1000, 1000);
+			tree.position.y = -tree.position.z * glMatrix.toRadian(slope);
+			tree.rotation.x = glMatrix.toRadian(-slope);
       trees.push(tree);
     }
       return scene;
@@ -146,13 +150,15 @@ function startGame(){
   var speed = 3.0, gravity = 0.20;
   var scene = createScene();
   engine.runRenderLoop(function(){
+	
       if(scene.isReady()){
          if (dia.position.z > 950){
            dia.position = new BABYLON.Vector3(0, 0, -950);
          }
          if (dia.position.z < 950){
            dia.position.z += speed;
-           dia.rotation.x = glMatrix.toRadian(-4);
+					dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
+           dia.rotation.x = glMatrix.toRadian(slope);
          }
          if (moveRight){
            dia.position.x += 1;

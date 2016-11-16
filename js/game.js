@@ -85,6 +85,7 @@ function startGame(){
         dia.scaling.x = 0.5;
         dia.scaling.y = 0.5;
         dia.scaling.z = 0.5;
+<<<<<<< HEAD
         dia.position.z = -length/2 + 150;//+ 50;
 		dia.position.y = -dia.position.z * glMatrix.toRadian(slope) + 15;
     dia.physicsImpostor = new BABYLON.PhysicsImpostor(dia, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
@@ -95,11 +96,19 @@ function startGame(){
       
 
 
+=======
+        dia.position.z = -length/2 ;//+ 50;
+		dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
+    });
+
+  for(var j = 0; j < rockPositionsX.length; j++){
+>>>>>>> origin/blaz
     BABYLON.SceneLoader.ImportMesh("", "", "assets/cube.babylon", scene, function (newMeshes) { //rock zahteven, začasno cube
       rock = newMeshes[0];
       rock.scaling.x = 5;
       rock.scaling.y = 5;
       rock.scaling.z = 5;
+<<<<<<< HEAD
         for(var j = 0; j < rockPositionsX.length; j++){
           var newRock = rock.createInstance("i" + j);
           newRock.position.x = rockPositionsX[rockCtr];
@@ -110,6 +119,16 @@ function startGame(){
           rocks.push(newRock);
         rockCtr++;
         }
+=======
+
+      rock.position.x = rockPositionsX[rockCtr]; // randomNumber(-400, 400); // ne dela, piše da je undefined o.O
+     	rock.position.z = rockPositionsZ[rockCtr]; //randomNumber(-length/2, length/2);
+     	console.log("narjen kamen " + rockCtr + " na " + rock.position.x +", " + rock.position.z);
+			rock.position.y = -rock.position.z * glMatrix.toRadian(slope);
+			rock.rotation.x = glMatrix.toRadian(-slope);
+      rocks.push(rock);
+	  rockCtr++;
+>>>>>>> origin/blaz
     });
 
 	  BABYLON.SceneLoader.ImportMesh("", "", "assets/mountain-rock.babylon", scene, function (newMeshes) {
@@ -146,6 +165,16 @@ function startGame(){
     var woodMaterial = new BABYLON.StandardMaterial(name, scene);
     woodMaterial.diffuseColor = new BABYLON.Color3(0.627451, 0.321569, 0.176471);
 
+<<<<<<< HEAD
+=======
+    //var ground = BABYLON.Mesh.CreateGround("ground1", 800, 2000, 2, scene);
+    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
+    var ghm = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "lightning.png", width, length, 3, 0.1, 0.5, scene, false); //ime, url, width, height, subdivizije, minH, maxH 
+    ghm.material = groundMaterial;
+	ghm.rotation.x = glMatrix.toRadian(slope);
+
+>>>>>>> origin/blaz
 	// CANVAS EDGES (left, right, bottom)
     var leftWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);
     leftWall.position.x = -width/2;
@@ -230,10 +259,16 @@ function startGame(){
          if (dia.position.z > (length/2)-50){ // GAME LOOP
            dia.position = new BABYLON.Vector3(0, 0, (-length/2)+50);
          }
+<<<<<<< HEAD
          if (dia.position.z <= -2250){ //movement
           
           // dia.position.z += speed;
 		       /*dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
+=======
+         //if (dia.position.z < 950){
+           dia.position.z += speed;
+		   dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
+>>>>>>> origin/blaz
            dia.rotation.x = glMatrix.toRadian(slope);
            */
          }
@@ -268,7 +303,11 @@ function startGame(){
          });
 
          snowPiles.forEach(function(snowPile){
+<<<<<<< HEAD
          	if(dia.intersectsMesh(snowPile, true)){
+=======
+         	if(dia.intersectsMesh(snowPile, false)){
+>>>>>>> origin/blaz
             console.warn("collision!!");
             engine.stopRenderLoop();
             if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){

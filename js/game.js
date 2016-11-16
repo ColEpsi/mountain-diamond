@@ -19,28 +19,18 @@ function startGame(){
   var engine = new BABYLON.Engine(canvas, true);
 
   //global variables
-<<<<<<< HEAD
   var dia, rock, snowPile, snowman; // MESHES
   var trees = [];
   var rocks = [];
   var snowPiles = [];
   var snowmen = [];
-  var slope = 5;
+  var slope = 10;
   var length = 5000, width = 500;
-=======
-  var dia, rock; // MESHES
-  var trees = [];
-  var rocks = [];
-  var slope = 4;
-  var length = 5000, width = 800;
-  //var poz = -949;
->>>>>>> origin/blaz
   var originalSpeed = 3;
   var speed = originalSpeed, gravity = 0.20, steeringFactor = 1; // variables for movement
   // OBSTACLE POSITIONS
   	// ROCKS
   	var rockPositionsX = [-15, -30, -40, -80, -81, -85, -90, -102, 15, 38, 50, 200];
-<<<<<<< HEAD
   	var rockPositionsZ = [-2400, -2200, -2, -790, -900, -1300, -10, -1111, -1239, -2000, -1530, -1450];
 	var rockCtr = 0;
 	// SNOW PILES
@@ -55,12 +45,6 @@ function startGame(){
 	var snowmanPositionsX = [];
 	var snowmanPositionsZ = [];
 	var snowmanCtr = 0;
-=======
-  	var rockPositionsZ = [-2400, -2400, -2400, -2200, -1500, -1300, -10, -1111, -1239, -2400, -2430, -2450];
-  	// TREES
-	  var treePositionsX = [];
-	  var treePositionsZ = [];
->>>>>>> origin/blaz
   // -------------------------------------------------------------
   // Here begins a function that we will 'call' just after it's built
   
@@ -70,6 +54,11 @@ function startGame(){
   var createScene = function() {
     // scene objekt
     var scene = new BABYLON.Scene(engine);
+    scene.enablePhysics();
+    scene.debugLayer.show(true, camera);
+    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    scene.fogDensity = 0.003;
+    scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);
     //barva scene
     scene.clearColor = new BABYLON.Color3( .5, .5, .5);
 
@@ -77,13 +66,17 @@ function startGame(){
     var camera = new BABYLON.ArcRotateCamera("camera1",  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
     camera.setPosition(new BABYLON.Vector3(0, 25, -60)); //0, 50, -100?
     camera.attachControl(canvas, true);
-<<<<<<< HEAD
     
-=======
->>>>>>> origin/blaz
     //globalna luc
     var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(1, 1, 0), scene);
     var light1 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(-1, 1, 0), scene);
+
+    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
+    var ground = BABYLON.Mesh.CreateGround("ground", width, length, 2, scene);
+    ground.material = groundMaterial;
+    ground.rotation.x = glMatrix.toRadian(slope);
+  
 
     // MESH IMPORTS
     BABYLON.SceneLoader.ImportMesh("", "", "assets/diaMontiffe.babylon", scene, function (newMeshes) {
@@ -92,49 +85,47 @@ function startGame(){
         dia.scaling.x = 0.5;
         dia.scaling.y = 0.5;
         dia.scaling.z = 0.5;
-<<<<<<< HEAD
-        dia.position.z = -length/2 ;//+ 50;
-		dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
+        dia.position.z = -length/2 + 150;//+ 50;
+		dia.position.y = -dia.position.z * glMatrix.toRadian(slope) + 15;
+    dia.physicsImpostor = new BABYLON.PhysicsImpostor(dia, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
+    ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.0}, scene);
     });
 
-  for(var j = 0; j < rockPositionsX.length; j++){
-=======
-        dia.position.z = -length/2 + 50;
-				dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
-    });
+   
+      
 
-  for(var i = 0; i <= 11; i++){
->>>>>>> origin/blaz
+
     BABYLON.SceneLoader.ImportMesh("", "", "assets/cube.babylon", scene, function (newMeshes) { //rock zahteven, začasno cube
       rock = newMeshes[0];
       rock.scaling.x = 5;
       rock.scaling.y = 5;
       rock.scaling.z = 5;
-
-<<<<<<< HEAD
-      rock.position.x = rockPositionsX[rockCtr]; // randomNumber(-400, 400); // ne dela, piše da je undefined o.O
-     	rock.position.z = rockPositionsZ[rockCtr]; //randomNumber(-length/2, length/2);
-     	console.log("narjen kamen " + rockCtr + " na " + rock.position.x +", " + rock.position.z);
-			rock.position.y = -rock.position.z * glMatrix.toRadian(slope);
-			rock.rotation.x = glMatrix.toRadian(-slope);
-      rocks.push(rock);
-	  rockCtr++;
+        for(var j = 0; j < rockPositionsX.length; j++){
+          var newRock = rock.createInstance("i" + j);
+          newRock.position.x = rockPositionsX[rockCtr];
+          newRock.position.z = rockPositionsZ[rockCtr];
+          console.log("narjen kamen " + rockCtr + " na " + newRock.position.x +", " + newRock.position.z);
+          newRock.position.y = -newRock.position.z * glMatrix.toRadian(slope);
+          newRock.rotation.x = glMatrix.toRadian(-slope);
+          rocks.push(newRock);
+        rockCtr++;
+        }
     });
-  }
 
-    for(var j = 0; j < snowPilePositionsX.length; j++){
 	  BABYLON.SceneLoader.ImportMesh("", "", "assets/mountain-rock.babylon", scene, function (newMeshes) {
 	    snowPile = newMeshes[0];
 	    snowPile.scaling.x = 90;
 	    snowPile.scaling.y = 90;
 	    snowPile.scaling.z = 90;
-	    snowPile.position.x = snowPilePositionsX[snowPileCtr];//+ 50;
-	    snowPile.position.z = snowPilePositionsZ[snowPileCtr];//+ 50;
-		snowPile.position.y = -snowPile.position.z * glMatrix.toRadian(slope) - 50; //-50 ker je ta objekt ogromen in dela probleme s collisions
-		snowPiles.push(snowPile);
-		snowPileCtr++;
+      for(var j = 0; j < snowPilePositionsX.length; j++){
+        var newSnowPile = snowPile.createInstance("i" + j);
+  	    snowPile.position.x = snowPilePositionsX[snowPileCtr];//+ 50;
+  	    snowPile.position.z = snowPilePositionsZ[snowPileCtr];//+ 50;
+    		snowPile.position.y = -snowPile.position.z * glMatrix.toRadian(slope) - 50; //-50 ker je ta objekt ogromen in dela probleme s collisions
+    		snowPiles.push(snowPile);
+    		snowPileCtr++;
+      }
 	  });
-	}
 
 	//for(var j = 0; j < snowPilePositionsX.length; j++){
 	  BABYLON.SceneLoader.ImportMesh("", "", "assets/snowmanstl.babylon", scene, function (newMeshes) {
@@ -143,38 +134,17 @@ function startGame(){
 	    snowman.scaling.y = 0.4;
 	    snowman.scaling.z = 0.4;
 	    snowman.position.x = 0;//+ 50;
-	    snowman.position.z = -2300;//+ 50;
+	    snowman.position.z = -2000;//+ 50;
 		snowman.position.y = (-snowman.position.z * glMatrix.toRadian(slope)) + 17; // + 17 ker je testen snežak ogromen
 		snowmanCtr++;
 	  });
 	//}
-=======
-      rock.position.x = rockPositionsX[i]; // randomNumber(-400, 400); // ne dela, piše da je undefined o.O
-     	rock.position.z = rockPositionsZ[i]; //randomNumber(-length/2, length/2);
-     	console.log("narjen kamen " + i + "na " + rock.position.x +", " + rock.position.z);
-			rock.position.y = -rock.position.z * glMatrix.toRadian(slope);
-			rock.rotation.x = glMatrix.toRadian(-slope);
-      rocks.push(rock);
-    });
-  }
->>>>>>> origin/blaz
 
     var leafMaterial = new BABYLON.StandardMaterial("leafMaterial", scene);
     leafMaterial.diffuseColor = new BABYLON.Color3(0.5, 1, 0.5);
     
     var woodMaterial = new BABYLON.StandardMaterial(name, scene);
     woodMaterial.diffuseColor = new BABYLON.Color3(0.627451, 0.321569, 0.176471);
-
-    //var ground = BABYLON.Mesh.CreateGround("ground1", 800, 2000, 2, scene);
-    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
-    var ghm = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "lightning.png", width, length, 3, 0.1, 0.5, scene, false); //ime, url, width, height, subdivizije, minH, maxH 
-    ghm.material = groundMaterial;
-<<<<<<< HEAD
-	ghm.rotation.x = glMatrix.toRadian(slope);
-=======
-		ghm.rotation.x = glMatrix.toRadian(slope);
->>>>>>> origin/blaz
 
 	// CANVAS EDGES (left, right, bottom)
     var leftWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);
@@ -248,7 +218,7 @@ function startGame(){
     window.addEventListener('keyup', function(event) {
       moveLeft = false;
       moveRight = false;
-      dia.rotation.y = glMatrix.toRadian(0);
+      dia.rotation.y = glMatrix.toRadian(-10);
       speed = originalSpeed; // treba poslušat izrecno za tipko S / down arrow
     }, false);
 
@@ -257,25 +227,16 @@ function startGame(){
   engine.runRenderLoop(function(){
 	
       if(scene.isReady()){
-<<<<<<< HEAD
          if (dia.position.z > (length/2)-50){ // GAME LOOP
            dia.position = new BABYLON.Vector3(0, 0, (-length/2)+50);
          }
-         //if (dia.position.z < 950){
-           dia.position.z += speed;
-		   dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
-=======
-         if (dia.position.z > 950){ // GAME LOOP
-          // dia.position = new BABYLON.Vector3(0, 0, -950);
-         }
-         //if (dia.position.z < 950){
-           dia.position.z += speed;
-           //poz = dia.position.z;
-           //console.log(dia.position.z);
-					 dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
->>>>>>> origin/blaz
+         if (dia.position.z <= -2250){ //movement
+          
+          // dia.position.z += speed;
+		       /*dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
            dia.rotation.x = glMatrix.toRadian(slope);
-         //}
+           */
+         }
          if (moveRight){
            if(speed != originalSpeed) dia.position.x += steeringFactor/2;
            else dia.position.x += steeringFactor;
@@ -295,29 +256,19 @@ function startGame(){
             }
           } 
          });
-<<<<<<< HEAD
 
          rocks.forEach(function(rock){
          		if(dia.intersectsMesh(rock, false)){
-=======
-         /*if(dia.intersectsMesh(rocks, false)){ // ne zazna collisiona s kamnom :/
->>>>>>> origin/blaz
             console.warn("collision!!");
             engine.stopRenderLoop();
             if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){
               startGame();
             }
-<<<<<<< HEAD
           }
          });
 
          snowPiles.forEach(function(snowPile){
-         	if(dia.intersectsMesh(snowPile, false)){
-=======
-         } */
-         rocks.forEach(function(rock){
-         		if(dia.intersectsMesh(rock, false)){
->>>>>>> origin/blaz
+         	if(dia.intersectsMesh(snowPile, true)){
             console.warn("collision!!");
             engine.stopRenderLoop();
             if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){

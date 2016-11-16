@@ -402,5 +402,4 @@ QuickTreeGenerator = function(sizeBranch, sizeTrunk, radius, trunkMaterial, leaf
       leaves.parent = tree;
       trunk.parent = tree;
       return tree;
-
     };

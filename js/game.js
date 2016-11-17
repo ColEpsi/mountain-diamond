@@ -90,7 +90,6 @@ function startGame(){
 
     // MESH IMPORTS
     BABYLON.SceneLoader.ImportMesh("", "", "assets/diaMontiffe.babylon", scene, function (newMeshes) {
-<<<<<<< HEAD
       dia = newMeshes[0];
       camera.target = dia;
       dia.scaling.x = 0.5;
@@ -99,25 +98,13 @@ function startGame(){
       dia.position.z = -length/2 + 50;//+ 50;
 		  dia.position.y = -dia.position.z * glMatrix.toRadian(slope) + 10;
 
-=======
-        camera.target = newMeshes[0];
-        dia = newMeshes[0];
-        dia.scaling.x = 0.5;
-        dia.scaling.y = 0.5;
-        dia.scaling.z = 0.5;
-        dia.position.z = -length/2 + 150;//+ 50;
-		dia.position.y = -dia.position.z * glMatrix.toRadian(slope) + 15;
->>>>>>> origin/blaz
     dia.physicsImpostor = new BABYLON.PhysicsImpostor(dia, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
     //dia.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 3));
     //dia.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0,0,0,0));
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.0}, scene);
 
-<<<<<<< HEAD
     });
 
-=======
->>>>>>> origin/blaz
 
     BABYLON.SceneLoader.ImportMesh("", "", "assets/cube.babylon", scene, function (newMeshes) { //rock zahteven, začasno cube
       rock = newMeshes[0];
@@ -303,23 +290,12 @@ function startGame(){
 	
       if(scene.isReady()){
          if (dia.position.z > (length/2)-50){ // GAME LOOP
-<<<<<<< HEAD
           engine.stopRenderLoop();
           changeStage();
           /*scene.clearColor = new BABYLON.Color4(0, 1, 0, 0.5);
           camera.target = new BABYLON.Vector3(0,0,5500);
           camera.position = new BABYLON.Vector3(0,0,5500);*/
            //dia.position = new BABYLON.Vector3(0, 450, (-length/2)+50);
-=======
-           dia.position = new BABYLON.Vector3(0, 0, (-length/2)+50);
-         }
-         if (dia.position.z <= -2250){ //movement
-          
-          // dia.position.z += speed;
-		       /*dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
-           dia.rotation.x = glMatrix.toRadian(slope);
-           */
->>>>>>> origin/blaz
          }
          if (dia.position.z <= -2250){} //starting speed
 

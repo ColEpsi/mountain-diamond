@@ -13,38 +13,47 @@ var randomNumber = function (min, max) {
           return ((random * (max - min)) + min);
 };
 
+function changeStage(){
+ var btn = document.createElement("BUTTON");
+ var t = document.createTextNode("click");
+ btn.appendChild(t);
+ document.body.appendChild(btn);
+}
+
 function startGame(){
   var canvas = document.getElementById("renderCanvas");
+  //var ctx = canvas.getContext("2d"); //context ko je stage finished
   // Load the BABYLON 3D engine
   var engine = new BABYLON.Engine(canvas, true);
 
   //global variables
-  var dia, rock, snowPile, snowman; // MESHES
+  var dia, rock, snowPile, snowman, guard; // MESHES
+  var camera;
   var trees = [];
   var rocks = [];
   var snowPiles = [];
   var snowmen = [];
-  var slope = 10;
+  var slope = 10, stage = 1;
   var length = 5000, width = 500;
   var originalSpeed = 3;
-  var speed = originalSpeed, gravity = 0.20, steeringFactor = 1; // variables for movement
+  var speed = originalSpeed, steeringFactor = 1, steerCtr = 0; // variables for movement
   // OBSTACLE POSITIONS
   	// ROCKS
   	var rockPositionsX = [-15, -30, -40, -80, -81, -85, -90, -102, 15, 38, 50, 200];
   	var rockPositionsZ = [-2400, -2200, -2, -790, -900, -1300, -10, -1111, -1239, -2000, -1530, -1450];
-	var rockCtr = 0;
+	  var rockCtr = 0;
 	// SNOW PILES
   	var snowPilePositionsX = [175, 20, -50, -155, 250];
   	var snowPilePositionsZ = [-2000, -1120, 50, 700, 1200];
-	var snowPileCtr = 0;
-  	// TREES
-	var treePositionsX = [];
-	var treePositionsZ = [];
-	var treeCtr = 0;
+	  var snowPileCtr = 0;
+  // TREES
+  	var treePositionsX = [0, -50, 50, 150, 30, 100, -100, 60, -210, 217, 0, 30];
+  	var treePositionsZ = [-2100, -2100, -2100, -1500, -1345, -1001, -800, 300, 120, 1590, 2000];
+  	var treeCtr = 0;
 	// SNOWMEN
-	var snowmanPositionsX = [];
-	var snowmanPositionsZ = [];
-	var snowmanCtr = 0;
+  	var snowmanPositionsX = [];
+  	var snowmanPositionsZ = [];
+  	var snowmanCtr = 0;
   // -------------------------------------------------------------
   // Here begins a function that we will 'call' just after it's built
   
@@ -55,15 +64,16 @@ function startGame(){
     // scene objekt
     var scene = new BABYLON.Scene(engine);
     scene.enablePhysics();
+    //scene.collisionsEnabled = true;
     scene.debugLayer.show(true, camera);
-    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    /*scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
     scene.fogDensity = 0.003;
-    scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);
+    scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);*/
     //barva scene
     scene.clearColor = new BABYLON.Color3( .5, .5, .5);
 
     // camera
-    var camera = new BABYLON.ArcRotateCamera("camera1",  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
+    camera = new BABYLON.ArcRotateCamera("camera1",  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
     camera.setPosition(new BABYLON.Vector3(0, 25, -60)); //0, 50, -100?
     camera.attachControl(canvas, true);
     
@@ -80,35 +90,27 @@ function startGame(){
 
     // MESH IMPORTS
     BABYLON.SceneLoader.ImportMesh("", "", "assets/diaMontiffe.babylon", scene, function (newMeshes) {
-        camera.target = newMeshes[0];
-        dia = newMeshes[0];
-        dia.scaling.x = 0.5;
-        dia.scaling.y = 0.5;
-        dia.scaling.z = 0.5;
-<<<<<<< HEAD
-        dia.position.z = -length/2 + 150;//+ 50;
-		dia.position.y = -dia.position.z * glMatrix.toRadian(slope) + 15;
+      dia = newMeshes[0];
+      camera.target = dia;
+      dia.scaling.x = 0.5;
+      dia.scaling.y = 0.5;
+      dia.scaling.z = 0.5;
+      dia.position.z = -length/2 + 50;//+ 50;
+		  dia.position.y = -dia.position.z * glMatrix.toRadian(slope) + 10;
+
     dia.physicsImpostor = new BABYLON.PhysicsImpostor(dia, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
+    //dia.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 3));
+    //dia.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0,0,0,0));
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.0}, scene);
+
     });
 
-   
-      
 
-
-=======
-        dia.position.z = -length/2 ;//+ 50;
-		dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
-    });
-
-  for(var j = 0; j < rockPositionsX.length; j++){
->>>>>>> origin/blaz
     BABYLON.SceneLoader.ImportMesh("", "", "assets/cube.babylon", scene, function (newMeshes) { //rock zahteven, začasno cube
       rock = newMeshes[0];
       rock.scaling.x = 5;
       rock.scaling.y = 5;
       rock.scaling.z = 5;
-<<<<<<< HEAD
         for(var j = 0; j < rockPositionsX.length; j++){
           var newRock = rock.createInstance("i" + j);
           newRock.position.x = rockPositionsX[rockCtr];
@@ -117,36 +119,44 @@ function startGame(){
           newRock.position.y = -newRock.position.z * glMatrix.toRadian(slope);
           newRock.rotation.x = glMatrix.toRadian(-slope);
           rocks.push(newRock);
-        rockCtr++;
+          rockCtr++;
         }
-=======
-
-      rock.position.x = rockPositionsX[rockCtr]; // randomNumber(-400, 400); // ne dela, piše da je undefined o.O
-     	rock.position.z = rockPositionsZ[rockCtr]; //randomNumber(-length/2, length/2);
-     	console.log("narjen kamen " + rockCtr + " na " + rock.position.x +", " + rock.position.z);
-			rock.position.y = -rock.position.z * glMatrix.toRadian(slope);
-			rock.rotation.x = glMatrix.toRadian(-slope);
-      rocks.push(rock);
-	  rockCtr++;
->>>>>>> origin/blaz
     });
-
-	  BABYLON.SceneLoader.ImportMesh("", "", "assets/mountain-rock.babylon", scene, function (newMeshes) {
+/*
+	  BABYLON.SceneLoader.ImportMesh("", "", "assets/sick-mountains.babylon", scene, function (newMeshes) {
 	    snowPile = newMeshes[0];
-	    snowPile.scaling.x = 90;
-	    snowPile.scaling.y = 90;
-	    snowPile.scaling.z = 90;
+      snowPile.rotation.y = glMatrix.toRadian(90);
+	    snowPile.scaling.x = 10;
+	    snowPile.scaling.y = 25;
+	    snowPile.scaling.z = 10;
       for(var j = 0; j < snowPilePositionsX.length; j++){
         var newSnowPile = snowPile.createInstance("i" + j);
-  	    snowPile.position.x = snowPilePositionsX[snowPileCtr];//+ 50;
-  	    snowPile.position.z = snowPilePositionsZ[snowPileCtr];//+ 50;
-    		snowPile.position.y = -snowPile.position.z * glMatrix.toRadian(slope) - 50; //-50 ker je ta objekt ogromen in dela probleme s collisions
-    		snowPiles.push(snowPile);
+  	    newSnowPile.position.x = snowPilePositionsX[snowPileCtr];//+ 50;
+  	    newSnowPile.position.z = snowPilePositionsZ[snowPileCtr];//+ 50;
+    		newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) ; //-50 ker je ta objekt ogromen in dela probleme s collisions
+    		snowPiles.push(newSnowPile);
     		snowPileCtr++;
       }
-	  });
+       for(var j = -2450; j < 2450; j += 100){
+        var newSnowPile = snowPile.createInstance("i" + j);
+        newSnowPile.position.x = 300 ;//+ 50;
+        newSnowPile.position.z = j;//+ 50;
+        newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) ; //-50 ker je ta objekt ogromen in dela probleme s collisions
+        snowPiles.push(newSnowPile);
+        snowPileCtr++;
+      }
+       for(var j = -2450; j < 2450; j += 100){
+        var newSnowPile = snowPile.createInstance("i" + j);
+        newSnowPile.position.x = -300 ;//+ 50;
+        newSnowPile.position.z = j;//+ 50;
+        newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) ; //-50 ker je ta objekt ogromen in dela probleme s collisions
+        snowPiles.push(newSnowPile);
+        snowPileCtr++;
+      }
 
-	//for(var j = 0; j < snowPilePositionsX.length; j++){
+      //snowPile.physicsImpostor = new BABYLON.PhysicsImpostor(snowPile, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
+	  });*/
+
 	  BABYLON.SceneLoader.ImportMesh("", "", "assets/snowmanstl.babylon", scene, function (newMeshes) {
 	    snowman = newMeshes[0];
 	    snowman.scaling.x = 0.4;
@@ -156,8 +166,34 @@ function startGame(){
 	    snowman.position.z = -2000;//+ 50;
 		snowman.position.y = (-snowman.position.z * glMatrix.toRadian(slope)) + 17; // + 17 ker je testen snežak ogromen
 		snowmanCtr++;
+    tree.physicsImpostor = new BABYLON.PhysicsImpostor(tree, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
 	  });
-	//}
+
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/lowpolytree.babylon", scene, function (newMeshes) { // TREEZ
+      tree = newMeshes[0];
+      tree.scaling.x = 6;
+      tree.scaling.y = 6;
+      tree.scaling.z = 6;
+      for(var j = 0; j < treePositionsX.length; j++){
+        var newTree = tree.createInstance("i" + j);
+        newTree.position.x = treePositionsX[treeCtr];//+ 50;
+        newTree.position.z = treePositionsZ[treeCtr];//+ 50;
+        newTree.position.y = -newTree.position.z * glMatrix.toRadian(slope) + 15;
+        console.log("narjen drevo " + treeCtr + " na x: " + newTree.position.x +", y:" +  newTree.position.y + ", z: " +  newTree.position.z);
+        trees.push(newTree);
+        treeCtr++;
+      }
+      tree.physicsImpostor = new BABYLON.PhysicsImpostor(tree, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
+    });
+
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/snowmanstl.babylon", scene, function (newMeshes) { //guard
+      guard = newMeshes[0];
+      guard.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2);
+      guard.position = new BABYLON.Vector3(5, 425, -2330);
+      //moveToTarget(guard, tar); //http://babylonjs-playground.azurewebsites.net/#Z3UOX#10
+    });
+      
+//============= guards
 
     var leafMaterial = new BABYLON.StandardMaterial("leafMaterial", scene);
     leafMaterial.diffuseColor = new BABYLON.Color3(0.5, 1, 0.5);
@@ -165,23 +201,14 @@ function startGame(){
     var woodMaterial = new BABYLON.StandardMaterial(name, scene);
     woodMaterial.diffuseColor = new BABYLON.Color3(0.627451, 0.321569, 0.176471);
 
-<<<<<<< HEAD
-=======
-    //var ground = BABYLON.Mesh.CreateGround("ground1", 800, 2000, 2, scene);
-    var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
-    var ghm = BABYLON.Mesh.CreateGroundFromHeightMap("ground", "lightning.png", width, length, 3, 0.1, 0.5, scene, false); //ime, url, width, height, subdivizije, minH, maxH 
-    ghm.material = groundMaterial;
-	ghm.rotation.x = glMatrix.toRadian(slope);
-
->>>>>>> origin/blaz
 	// CANVAS EDGES (left, right, bottom)
+  /*
     var leftWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);
     leftWall.position.x = -width/2;
     leftWall.position.y = 50;
     leftWall.rotation.y = glMatrix.toRadian(-90);
     leftWall.rotation.z = glMatrix.toRadian(-slope);
-    leftWall.scaling.x = 100;
+    leftWall.scaling.x = 50;
     var leftWallMaterial = new BABYLON.StandardMaterial("background", scene);
     leftWallMaterial.diffuseTexture = new BABYLON.Texture("./textures/Mountain.jpg", scene);
     leftWall.material = leftWallMaterial;
@@ -189,39 +216,34 @@ function startGame(){
     var rightWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);;
     rightWall.position.x = width/2;
     rightWall.position.y = 50;
-    rightWall.scaling.x = 100;
+    rightWall.scaling.x = 50;
     rightWall.rotation.y = glMatrix.toRadian(90);
     rightWall.rotation.z = glMatrix.toRadian(slope);
     rightWall.material = leftWallMaterial;
-
-    /*
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", 3000.0, scene);
+*/
+    
+    var skybox = BABYLON.Mesh.CreateBox("skyBox", 2500, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
     skyboxMaterial.disableLighting = true;
-    skybox.material = skyboxMaterial;
-    skybox.infiniteDistance = true;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/sky32/skybox", scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/sky32", scene);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
+    skybox.infiniteDistance = true;
     
-    skybox.position.y = 5;
-  */
+    var ramp = BABYLON.Mesh.CreatePlane("ramp", 50, scene);
+    ramp.rotation.x = glMatrix.toRadian(70);
+    ramp.position.x = 0;
+    ramp.position.z = 1500;
+    ramp.position.y = -ramp.position.z * glMatrix.toRadian(slope);
+    ramp.physicsImpostor = new BABYLON.PhysicsImpostor(ramp, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 3.0  }, scene);
 
-    
-    for(var i = 0; i < 50; i++){
-      var tree = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
-      tree.position.x = randomNumber(-400, 400);
-      tree.position.z = randomNumber(-length/2, length/2);
-			tree.position.y = -tree.position.z * glMatrix.toRadian(slope);
-			tree.rotation.x = glMatrix.toRadian(-slope);
-      trees.push(tree);
-    }
       return scene;
   };
-
+    var distance = 40;
     var moveRight = false;
     var moveLeft = false;
     window.addEventListener('keydown', function(event) {
@@ -229,26 +251,37 @@ function startGame(){
         case 37: // Left
         case 65: //a
           moveLeft = true;
-          dia.rotation.y = glMatrix.toRadian(-10);
           break;
 
         case 39: // Right
         case 68: //d
           moveRight = true;
-          dia.rotation.y = glMatrix.toRadian(10);
           break;
 
-        case 40:
+        case 40: // Down
         case 83:
         	speed = originalSpeed/2;
+        break;
+
+        case 38: // Up
+        case 87:
+          dia.position.z += 40;
+        break;
         }
     }, false);
 
     window.addEventListener('keyup', function(event) {
       moveLeft = false;
       moveRight = false;
-      dia.rotation.y = glMatrix.toRadian(-10);
+
+      if(steerCtr > 0){
+        dia.rotation.y = steerCtr * glMatrix.toRadian(1); //je šla desno  
+      }
+      else if (steerCtr < 0){
+        dia.rotation.y = steerCtr * glMatrix.toRadian(1); //je šla levo
+      } 
       speed = originalSpeed; // treba poslušat izrecno za tipko S / down arrow
+      steerCtr = 0;
     }, false);
 
   //ANIMATION
@@ -257,31 +290,49 @@ function startGame(){
 	
       if(scene.isReady()){
          if (dia.position.z > (length/2)-50){ // GAME LOOP
-           dia.position = new BABYLON.Vector3(0, 0, (-length/2)+50);
+          engine.stopRenderLoop();
+          changeStage();
+          /*scene.clearColor = new BABYLON.Color4(0, 1, 0, 0.5);
+          camera.target = new BABYLON.Vector3(0,0,5500);
+          camera.position = new BABYLON.Vector3(0,0,5500);*/
+           //dia.position = new BABYLON.Vector3(0, 450, (-length/2)+50);
          }
-<<<<<<< HEAD
-         if (dia.position.z <= -2250){ //movement
-          
-          // dia.position.z += speed;
-		       /*dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
-=======
-         //if (dia.position.z < 950){
-           dia.position.z += speed;
-		   dia.position.y = -dia.position.z * glMatrix.toRadian(slope);
->>>>>>> origin/blaz
-           dia.rotation.x = glMatrix.toRadian(slope);
-           */
-         }
-         if (moveRight){
+         if (dia.position.z <= -2250){} //starting speed
+
+         if (moveRight){    
            if(speed != originalSpeed) dia.position.x += steeringFactor/2;
            else dia.position.x += steeringFactor;
-           //dia.moveWithCollisions(3, 0, 0); //metoda sprejme vektor
+           
+           if(steerCtr > -45){
+             dia.rotation.y = glMatrix.toRadian(1);
+             steerCtr--;
+           }  
          }
-         if (moveLeft){
+
+         if (moveLeft){  
            if(speed != originalSpeed) dia.position.x -= steeringFactor/2;
            else dia.position.x -= steeringFactor;
-           //dia.moveWithCollisions(speed, gravity, 0); //metoda sprejme vektor
+           
+           if(steerCtr < 45){
+              dia.rotation.y = glMatrix.toRadian(-1);
+              steerCtr++;
+           }
+           
          }
+
+         distance -= 0.01;
+         guard.position.x = dia.position.x + distance;
+         guard.position.z = dia.position.z  - distance;
+         guard.position.y = dia.position.y + 5;
+         //guard.moveWithCollisions(dia.position);
+         if(dia.intersectsMesh(guard, false)){
+            console.warn("collision!!");
+            engine.stopRenderLoop();
+            if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){
+              startGame();
+            }
+         }
+
          trees.forEach(function(tree){
             if(dia.intersectsMesh(tree, false)){
             console.warn("collision!!");
@@ -298,16 +349,16 @@ function startGame(){
             engine.stopRenderLoop();
             if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){
               startGame();
-            }
+            }          
           }
+           if(guard.intersectsMesh(rock, false)){
+              guard.dispose();
+              console.warn("MAN DOWN!!!!");
+            }
          });
 
          snowPiles.forEach(function(snowPile){
-<<<<<<< HEAD
          	if(dia.intersectsMesh(snowPile, true)){
-=======
-         	if(dia.intersectsMesh(snowPile, false)){
->>>>>>> origin/blaz
             console.warn("collision!!");
             engine.stopRenderLoop();
             if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){
@@ -324,83 +375,3 @@ function startGame(){
   engine.resize();
   });
 } //===@===@===@===@===@===@===@===@===@=== END OF PROGRAM ===@===@===@===@===@===@===@===@===@===
-
-QuickTreeGenerator = function(sizeBranch, sizeTrunk, radius, trunkMaterial, leafMaterial, scene) {
-
-      var tree = new BABYLON.Mesh("tree", scene);
-      tree.isVisible = false;
-      
-      var leaves = new BABYLON.Mesh("leaves", scene);
-      
-      var vertexData = BABYLON.VertexData.CreateSphere({segments:2, diameter:sizeBranch}); 
-      
-      vertexData.applyToMesh(leaves, false);
-
-      var positions = leaves.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-      var indices = leaves.getIndices();
-      var numberOfPoints = positions.length/3;
-
-      var map = [];
-
-      var v3 = BABYLON.Vector3;
-      var max = [];
-
-      for (var i=0; i<numberOfPoints; i++) {
-          var p = new v3(positions[i*3], positions[i*3+1], positions[i*3+2]);
-
-          if (p.y >= sizeBranch/2) {
-              max.push(p);
-          }
-
-          var found = false;
-          for (var index=0; index<map.length&&!found; index++) {
-              var array = map[index];
-              var p0 = array[0];
-              if (p0.equals (p) || (p0.subtract(p)).lengthSquared() < 0.01){
-                  array.push(i*3);
-                  found = true;
-              }
-          }
-          if (!found) {
-              var array = [];
-              array.push(p, i*3);
-              map.push(array);
-          }
-
-      }
-
-      map.forEach(function(array) {
-          var index, min = -sizeBranch/10, max = sizeBranch/10;
-          var rx = randomNumber(min,max);
-          var ry = randomNumber(min,max);
-          var rz = randomNumber(min,max);
-
-          for (index = 1; index<array.length; index++) {
-              var i = array[index];
-              positions[i] += rx;
-              positions[i+1] += ry;
-              positions[i+2] += rz;
-          }
-      });
-      leaves.setVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
-      var normals = [];
-      BABYLON.VertexData.ComputeNormals(positions, indices, normals);
-      leaves.setVerticesData(BABYLON.VertexBuffer.NormalKind, normals);
-      leaves.convertToFlatShadedMesh();
-      
-      leaves.material = leafMaterial;
-      leaves.position.y = sizeTrunk+sizeBranch/2-2;
-      
-
-      var trunk = BABYLON.Mesh.CreateCylinder("trunk", sizeTrunk, radius-2<1?1:radius-2, radius, 10, 2, scene );
-      
-      trunk.position.y = (sizeBranch/2+2)-sizeTrunk/2;
-
-      trunk.material = trunkMaterial;
-      trunk.convertToFlatShadedMesh();
-      
-      leaves.parent = tree;
-      trunk.parent = tree;
-      return tree;
-
-    };

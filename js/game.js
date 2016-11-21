@@ -1,6 +1,10 @@
 // Get the canvas element from our HTML below
 
 document.addEventListener("DOMContentLoaded", function () {
+	var animationCanvas = document.getElementById("animationCanvas");
+	animationCanvasContext = animationCanvas.getContext("2d");
+	animationCanvas.style.display='none';
+
   if (BABYLON.Engine.isSupported()) {
     startGame();
   }
@@ -14,167 +18,457 @@ var randomNumber = function (min, max) {
           return ((random * (max - min)) + min);
 };
 
-function startGame(){
-  var canvas = document.getElementById("renderCanvas");
-  // Load the BABYLON 3D engine
-  var engine = new BABYLON.Engine(canvas, true);
+function changeStage(){
+	stage++;
+	//console.log("here goes some stage transition...   render: " + renderCanvas.style.display + ", animation: " +animationCanvas.style.display);
+	toggleCanvas();
 
-  //global variables
-  var mesh;
-  var rock;
+	animationCanvasContext.beginPath();
+	animationCanvasContext.arc(95,50,40,0,2*Math.PI);
+	//animationCanvasContext.font = "50px Comic Sans MS";
+	//animationCanvasContext.fillStyle = "red";
+	//animationCanvasContext.textAlign = "center";
+	//animationCanvasContext.fillText("Stage Cleared", 1908/2, 699/2);
+	animationCanvasContext.stroke();
+
+	setTimeout(function(){
+						 toggleCanvas();
+						 startGame();
+						 }, 5000);
+}
+
+function toggleCanvas(){
+	if(renderCanvas.style.display=='inline-block'){
+		console.log("render je inline-block");
+	renderCanvas.style.display='none';
+    animationCanvas.style.display='inline-block'; 
+  }else{
+  	console.log("animation je inline-block");
+    animationCanvas.style.display='none';
+    renderCanvas.style.display='inline-block';
+  }
+  console.log("toggled canvas...");
+}
+
+var engine;
+var stage = 1;
+
+function startGame(){
+  renderCanvas.style.display='inline-block';
+  var canvas = document.getElementById("renderCanvas");
+
+  // Load the BABYLON 3D engine
+  engine = new BABYLON.Engine(canvas, true);
+  switch(stage){
+  	case 1:
+  		//global variables
+  var dia, rock, snowPile, snowman, guard; // MESHES
+  var camera;
   var trees = [];
+  var rocks = [];
+  var snowPiles = [];
+  var snowmen = [];
+  var guards = [];
+  var slope = 10;
+  var length = 5000, width = 500;
+  var originalSpeed = 3;
+  var speed = originalSpeed, steeringFactor = 1, steerCtr = 0; // variables for movement
+  // OBSTACLE POSITIONS
+  	// ROCKS
+  	var rockPositionsX = [60, -30, -40, -80, -81, -85, -90, -102, 30, 38, 50, 200];
+  	var rockPositionsZ = [2400, -2200, -2, -790, -900, -1300, -10, -1111, -1039, -2000, -1530, -1450];
+	var rockCtr = 0;
+	// SNOW PILES
+  	var snowPilePositionsX = [175, 20, -50, -155, 250];
+  	var snowPilePositionsZ = [-2000, -1120, 2255, 700, 1200];
+	var snowPileCtr = 0;
+  // TREES
+  	var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, 217, -78, 30];
+  	var treePositionsZ = [-2000, -17590, -2100, 1592, -1345, -1001, -800, 300, 120, 1590, 2000];
+  	var treeCtr = 0;
+	// SNOWMEN
+  	var snowmanPositionsX = [];
+  	var snowmanPositionsZ = [];
+  	var snowmanCtr = 0;
+	// GUARDS
+  	var guardPositionsX = [200, 100, -150, 20];
+  	var guardPositionsZ = [-2450, -2450, -2450, -2450];
+  	var guardCtr = 0;
+
+  	break;
+
+  	case 2:
+  		//console.log("switch = 2");
+  		//global variables
+  var dia, rock, snowPile, snowman, guard; // MESHES
+  var camera;
+  var trees = [];
+  var rocks = [];
+  var snowPiles = [];
+  var snowmen = [];
+  var guards = [];
+  var slope = 10;
+  var length = 5000, width = 500;
+  var originalSpeed = 3;
+  var speed = originalSpeed, steeringFactor = 1, steerCtr = 0; // variables for movement
+  // OBSTACLE POSITIONS
+  	// ROCKS
+  	var rockPositionsX = [-50,0,50];
+  	var rockPositionsZ = [-2000,-2000,-2000];
+	var rockCtr = 0;
+	// SNOW PILES
+  	var snowPilePositionsX = [175, 20, -50, -155, 250];
+  	var snowPilePositionsZ = [-2000, -1120, 50, 700, 1200];
+	var snowPileCtr = 0;
+  // TREES
+  	var treePositionsX = [0, -50, 50, 150, 30, 100, -100, 60, -210, 217, 0, 30];
+  	var treePositionsZ = [-2100, -2100, -2100, -1500, -1345, -1001, -800, 300, 120, 1590, 2000];
+  	var treeCtr = 0;
+	// SNOWMEN
+  	var snowmanPositionsX = [];
+  	var snowmanPositionsZ = [];
+  	var snowmanCtr = 0;
+	// GUARDS
+  	var guardPositionsX = [50, 200, -150, 20];
+  	var guardPositionsZ = [-2450, -2450, -2450, -2450];
+  	var guardCtr = 0;
+  	break;
+  }
+
+
   // -------------------------------------------------------------
   // Here begins a function that we will 'call' just after it's built
-  
   
 //------------------------------------------------------------------------------------
 
   var createScene = function() {
     // scene objekt
     var scene = new BABYLON.Scene(engine);
+    scene.enablePhysics();
+    //scene.collisionsEnabled = true;
+    scene.debugLayer.show(true, camera);
+    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    scene.fogDensity = 0.003;
+    scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);
     //barva scene
     scene.clearColor = new BABYLON.Color3( .5, .5, .5);
 
     // camera
-    var camera = new BABYLON.ArcRotateCamera("camera1",  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
-    camera.setPosition(new BABYLON.Vector3(0, 25, -60));
-    //camera.attachControl(canvas, true);
+    camera = new BABYLON.ArcRotateCamera("camera1",  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
+    camera.setPosition(new BABYLON.Vector3(0, 50, -100)); //0, 50, -100?
+    camera.attachControl(canvas, true);
+    
     //globalna luc
-
     var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(1, 1, 0), scene);
     var light1 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(-1, 1, 0), scene);
 
-    // import mesh
-    
-    BABYLON.SceneLoader.ImportMesh("", "", "assets/diaMontiffe.babylon", scene, function (newMeshes) {
-        camera.target = newMeshes[0];
-        mesh = newMeshes[0];
-        mesh.scaling.x = 0.5;
-        mesh.scaling.y = 0.5;
-        mesh.scaling.z = 0.5;
-        mesh.position.z = -950;
-    });
-  
-    BABYLON.SceneLoader.ImportMesh("", "", "assets/rock.babylon", scene, function (newMeshes) {
-      newMeshes[0].scaling.x = 10;
-      newMeshes[0].scaling.y = 10;
-      newMeshes[0].scaling.z = 10;
-      newMeshes[0].position.z = -800;
-      rock = newMeshes[0];
-    });
-
-    var leafMaterial = new BABYLON.StandardMaterial("leafMaterial", scene);
-    leafMaterial.diffuseColor = new BABYLON.Color3(0.5, 1, 0.5);
-    
-    var woodMaterial = new BABYLON.StandardMaterial(name, scene);
-    woodMaterial.diffuseColor = new BABYLON.Color3(0.627451, 0.321569, 0.176471);
-    
- 
-    var ground = BABYLON.Mesh.CreatePlane("Plane", 200, scene);
-    ground.rotation.x = glMatrix.toRadian(90);
-    ground.scaling.y = 10;
     var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
-    groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/field-of-dimpled-snow.jpg", scene);
+    groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
+    groundMaterial.bumpTexture = new BABYLON.Texture("./textures/normalMap.jpg", scene);
+    groundMaterial.emissiveColor = new BABYLON.Color3
+    groundMaterial.diffuseTexture.uScale = 5.0;//Repeat 5 times on the Vertical Axes
+    groundMaterial.diffuseTexture.vScale = 10.0;//Repeat 10 times on the Horizontal Axes
+    var ground = BABYLON.Mesh.CreateGround("ground", width, length, 2, scene);
     ground.material = groundMaterial;
+    ground.rotation.x = glMatrix.toRadian(slope);
+  
 
-    var background = BABYLON.Mesh.CreatePlane("Plane", 100, scene);
-    background.position.x = -100;
-    background.position.y = 50;
-    background.rotation.y = glMatrix.toRadian(-90);
-    background.scaling.x = 20;
-    var backgroundMaterial = new BABYLON.StandardMaterial("background", scene);
-    backgroundMaterial.diffuseTexture = new BABYLON.Texture("./textures/Mountain.jpg", scene);
-    background.material = backgroundMaterial;
+    // MESH IMPORTS
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/diaMontiffe.babylon", scene, function (newMeshes) {
+      dia = newMeshes[0];
+      camera.target = dia;
+      dia.scaling.x = 0.5;
+      dia.scaling.y = 0.5;
+      dia.scaling.z = 0.5;
+      dia.position.z = -length/2 + 100;//+ 50;
+	  dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope));
+	  dia.rotation.x = glMatrix.toRadian(slope);
 
-    var backgroundRight = BABYLON.Mesh.CreatePlane("Plane", 100, scene);;
-    backgroundRight.position.x = 100;
-    backgroundRight.position.y = 50;
-    backgroundRight.scaling.x = 20;
-    backgroundRight.rotation.y = glMatrix.toRadian(90);
-    backgroundRight.material = backgroundMaterial;
+    //dia.physicsImpostor = new BABYLON.PhysicsImpostor(dia, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 10, restitution: 0.1, friction: 0.5  }, scene);
+    //dia.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 3));
+    //dia.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0,0,0,0));
+    ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.0}, scene);
 
-    /*
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", 3000.0, scene);
+    });
+
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/cube.babylon", scene, function (newMeshes) { //rock zahteven, začasno cube
+      rock = newMeshes[0];
+      rock.scaling.x = 5;
+      rock.scaling.y = 5;
+      rock.scaling.z = 5;
+        for(var j = 0; j < rockPositionsX.length; j++){
+          var newRock = rock.createInstance("i" + j);
+          newRock.position.x = rockPositionsX[rockCtr];
+          newRock.position.z = rockPositionsZ[rockCtr];
+          //console.log("narjen kamen " + rockCtr + " na " + newRock.position.x +", " + newRock.position.z);
+          newRock.position.y = -newRock.position.z * glMatrix.toRadian(slope);
+          newRock.rotation.x = glMatrix.toRadian(-slope);
+          rocks.push(newRock);
+          rockCtr++;
+        }
+    });
+
+	  BABYLON.SceneLoader.ImportMesh("", "", "assets/pyr.babylon", scene, function (newMeshes) {
+	    snowPile = newMeshes[0];
+      	
+	    snowPile.scaling.x = 0.8;
+	    snowPile.scaling.y = 0.8;
+	    snowPile.scaling.z = 0.8;
+
+       for(var j = 0; j < snowPilePositionsX.length; j++){
+        var newSnowPile = snowPile.createInstance("i" + j);
+        newSnowPile.position.x = snowPilePositionsX[snowPileCtr];//+ 50;
+        newSnowPile.position.z = snowPilePositionsZ[snowPileCtr];//+ 50;
+        newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) ; //-50 ker je ta objekt ogromen in dela probleme s collisions
+        snowPiles.push(newSnowPile);
+        snowPileCtr++;
+      }
+      snowPile.physicsImpostor = new BABYLON.PhysicsImpostor(snowPile, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 0.0  }, scene);
+	  });
+
+	  BABYLON.SceneLoader.ImportMesh("", "", "assets/snowmanstl.babylon", scene, function (newMeshes) {
+	    snowman = newMeshes[0];
+	    snowman.scaling.x = 0.4;
+	    snowman.scaling.y = 0.4;
+	    snowman.scaling.z = 0.4;
+	    snowman.position.x = 0;//+ 50;
+	    snowman.position.z = -2000;//+ 50;
+		snowman.position.y = (-snowman.position.z * glMatrix.toRadian(slope)) + 17; // + 17 ker je testen snežak ogromen
+		snowmanCtr++;
+    	//snowman.physicsImpostor = new BABYLON.PhysicsImpostor(snowman, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
+	  });
+
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/lowpolytree.babylon", scene, function (newMeshes) { // TREEZ
+      tree = newMeshes[0];
+      tree.scaling.x = 6;
+      tree.scaling.y = 6;
+      tree.scaling.z = 6;
+      for(var j = 0; j < treePositionsX.length; j++){
+        var newTree = tree.createInstance("i" + j);
+        newTree.position.x = treePositionsX[treeCtr];//+ 50;
+        newTree.position.z = treePositionsZ[treeCtr];//+ 50;
+        newTree.position.y = -newTree.position.z * glMatrix.toRadian(slope) + 15;
+        //console.log("narjen drevo " + treeCtr + " na x: " + newTree.position.x +", y:" +  newTree.position.y + ", z: " +  newTree.position.z);
+        trees.push(newTree);
+        treeCtr++;
+      }
+      tree.physicsImpostor = new BABYLON.PhysicsImpostor(tree, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
+    });
+
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/bear.babylon", scene, function (newMeshes) { //guard army
+      guard = newMeshes[0];
+      guard.scaling = new BABYLON.Vector3(0.01, 0.01, 0.01);
+      guard.rotation.y = glMatrix.toRadian(180);
+
+	  for(var g = 0; g < guardPositionsX.length; ){
+        var newGuard = guard.createInstance("i" + g);
+        newGuard.position.x = guardPositionsX[g];//+ 50;
+        newGuard.position.z = guardPositionsZ[g];//+ 50;
+        newGuard.position.y = -newGuard.position.z * Math.tan(glMatrix.toRadian(slope)) + 15;
+        guards.push(newGuard);
+		guards[g].physicsImpostor = new BABYLON.PhysicsImpostor(guards[g], BABYLON.PhysicsImpostor.BoxImpostor, { mass: 10, restitution: 0.0, friction: 0.1  }, scene);
+        g++
+		//console.log("guard " + g + " made.");
+      }
+    });
+
+
+	// CANVAS EDGES (left, right, bottom)
+
+    var leftWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);
+    leftWall.position.x = -width/2;
+    leftWall.position.y = 100;
+    leftWall.rotation.y = glMatrix.toRadian(-90);
+    leftWall.rotation.z = glMatrix.toRadian(-slope);
+    leftWall.scaling.x = 50;
+    leftWall.scaling.y = 2;
+    var leftWallMaterial = new BABYLON.StandardMaterial("background", scene);
+    leftWallMaterial.diffuseTexture = new BABYLON.Texture("./textures/Mountain.jpg", scene);
+    leftWall.material = leftWallMaterial;
+
+    var rightWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);;
+    rightWall.position.x = width/2;
+    rightWall.position.y = 100;
+    rightWall.scaling.x = 50;
+    rightWall.scaling.y = 2;
+    rightWall.rotation.y = glMatrix.toRadian(90);
+    rightWall.rotation.z = glMatrix.toRadian(slope);
+    rightWall.material = leftWallMaterial;
+    
+    var skybox = BABYLON.Mesh.CreateBox("skyBox", 2500, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
     skyboxMaterial.disableLighting = true;
-    skybox.material = skyboxMaterial;
-    skybox.infiniteDistance = true;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/sky32/skybox", scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/sky32", scene);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
+    skybox.infiniteDistance = true;
     
-    skybox.position.y = 5;
-  */
-
+    var ramp = BABYLON.Mesh.CreatePlane("ramp", 50, scene);
+    ramp.rotation.x = glMatrix.toRadian(80);
+    ramp.position.x = 0;
+    ramp.position.z = 1100;
+    ramp.position.y = -ramp.position.z * glMatrix.toRadian(slope);
+    ramp.physicsImpostor = new BABYLON.PhysicsImpostor(ramp, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 1.5  }, scene);
     
-    for(var i = 0; i < 50; i++){
-      var tree = QuickTreeGenerator(15, 10, 5, woodMaterial, leafMaterial, scene);
-      tree.position.x = randomNumber(-100, 100);
-      tree.position.z = randomNumber(-1000, 1000);
-      trees.push(tree);
-    }
-      return scene;
+    return scene;
   };
-
+    
     var moveRight = false;
     var moveLeft = false;
     window.addEventListener('keydown', function(event) {
       switch (event.keyCode) {
-        case 37: // Left
-          moveLeft = true;
-          mesh.rotation.y = glMatrix.toRadian(-10);
+        case 65: //a
+        	dia.rotation.y = glMatrix.toRadian(steerCtr);
+        	//steerCtr = 0;
+            moveLeft = true;
           break;
 
         case 39: // Right
-          moveRight = true;
-          mesh.rotation.y = glMatrix.toRadian(10);
+        case 68: //d
+        	dia.rotation.y = glMatrix.toRadian(steerCtr);
+        	//steerCtr = 0;
+            moveRight = true;
           break;
+
+        case 40: // Down
+        case 83:
+        	speed = originalSpeed/2;
+        break;
+
+        case 38: // Up
+        case 87:
+          dia.position.y += 40;
+        break;
         }
     }, false);
 
     window.addEventListener('keyup', function(event) {
-      moveLeft = false;
-      moveRight = false;
-      mesh.rotation.y = glMatrix.toRadian(0);
-
+    	switch (event.keyCode) {
+        case 65: //a
+        	console.log(steerCtr);
+          moveLeft = false;
+          dia.rotation.y = glMatrix.toRadian(steerCtr);
+          steerCtr = 0;
+          break;
+        case 68: //d
+          moveRight = false;
+          dia.rotation.y = glMatrix.toRadian(steerCtr);
+          steerCtr = 0;
+          break;
+        case 83:
+        	speed = originalSpeed; // treba poslušat izrecno za tipko S / down arrow
+      		steerCtr = 0;
+        break;
+    	}
     }, false);
 
-  //ANIMATION
+  //ANIMATION ============================================================================================== CHANGE STAGE
+  var speed = 1;
+  var accel = 0;
   var scene = createScene();
   engine.runRenderLoop(function(){
+	
+	
       if(scene.isReady()){
-         if (mesh.position.z > 950){
-           mesh.position = new BABYLON.Vector3(0, 0, -950);
+         if (dia.position.z > length/2){
+          engine.stopRenderLoop();
+          camera.dispose();
+          scene.dispose();
+          console.log("scene disposed.");
+          changeStage();
          }
-         if (mesh.position.z < 950){
-           mesh.position.z += 3;
+         if (accel == 250){
+         	speed += 0.5;
+         	accel = 0;
+         }  //starting speed
+         	++accel;
+        	dia.position.z += speed;;
+        	dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope));
+         if (moveRight){    
+			 dia.position.x += speed / 2;
+
+             dia.rotation.y = glMatrix.toRadian(20);
+
          }
-         if (moveRight){
-           mesh.position.x += 0.7;
-         }
-         if (moveLeft){
-           mesh.position.x -= 0.7;
-         }
-         trees.forEach(function(tree){
-            if(mesh.intersectsMesh(tree, false)){
-            console.warn("collision!!");
-            engine.stopRenderLoop();
-            if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){
-              startGame();
-            }
-          } 
-         });
-         if(mesh.intersectsMesh(rock, false)){
-            console.warn("collision!!");
-            engine.stopRenderLoop();
-            if(window.confirm("GAME OVER\nPLAY AGAIN?") == true){
-              startGame();
-            }
-         } 
-      }
+
+         if (moveLeft){  
+			 dia.position.x -= speed / 2;
+           
+            dia.rotation.y = glMatrix.toRadian(-20);
+        }
+        if (!moveLeft && !moveRight){
+        	dia.rotation.y = glMatrix.toRadian(0);
+        }
+
+//dia intersects
+			trees.forEach(function(tree){
+				if(dia.intersectsMesh(tree, false)){
+					//console.warn("collision!!");
+					engine.stopRenderLoop();
+					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();
+				} 
+			 });
+			 
+			 snowPiles.forEach(function(snowPile){
+				if(dia.intersectsMesh(snowPile, true)){
+					//console.warn("collision!!");
+					engine.stopRenderLoop();
+					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();  
+			    }
+			 });
+			 
+			 rocks.forEach(function(rock){
+				if(dia.intersectsMesh(rock, false)){
+					console.warn("collision!!");
+					engine.stopRenderLoop();
+					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();          
+			    }
+			 });
+//dia intersects
+
+//CHASE
+		for(var g = 0; g < guards.length; g++){ // s for loopom treba preverit za vsakga guarda posebi...
+				 if(Math.floor(guards[g].position.x) > Math.floor(dia.position.x)) guards[g].position.x -= 0.5;
+				 else if (Math.floor(guards[g].position.x) < Math.floor(dia.position.x)) guards[g].position.x += 0.5;
+				 guards[g].position.z += 0.5; // po gasi
+				 //če se zgodi, da pridejo pred Dio oni nadaljujejo pot, se ne ustavljajo. to OK? Drugač je tako skakajoče gibanje
+
+//guard intersects				
+			 if(dia.intersectsMesh(guards[g], false)){
+				//console.warn("captured by guard " + g);
+				engine.stopRenderLoop();
+				if(window.confirm("BEAR POOP\nPLAY AGAIN?") == true){
+				  startGame();
+				}
+			 }
+			 
+			rocks.forEach(function(rock){
+			   if(guards[g].intersectsMesh(rock, false)){
+				  guards[g].dispose();
+				 // console.log("MAN DOWN. Disposed of guard " + g);
+				}
+			 });
+			 
+			trees.forEach(function(tree){
+				if(guards[g].intersectsMesh(tree, false)){
+					//console.warn("MAN DOWN. Disposed of guard " + g);
+					guards[g].dispose();
+				} 
+			 });
+			 
+			snowPiles.forEach(function(snowPile){
+				if(guards[g].intersectsMesh(snowPile, false)){
+					//console.warn("MAN DOWN. Disposed of guard " + g);
+					guards[g].dispose();
+				} 
+			 });			 
+        }
+		//konec for loopa. funkcije forEach zelo potratne... Optimizacija?
+	  }
       scene.render();
   });
   
@@ -182,85 +476,4 @@ function startGame(){
   window.addEventListener("resize", function () {
   engine.resize();
   });
-
-}
-
-QuickTreeGenerator = function(sizeBranch, sizeTrunk, radius, trunkMaterial, leafMaterial, scene) {
-
-      var tree = new BABYLON.Mesh("tree", scene);
-      tree.isVisible = false;
-      
-      var leaves = new BABYLON.Mesh("leaves", scene);
-      
-      var vertexData = BABYLON.VertexData.CreateSphere({segments:2, diameter:sizeBranch}); 
-      
-      vertexData.applyToMesh(leaves, false);
-
-      var positions = leaves.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-      var indices = leaves.getIndices();
-      var numberOfPoints = positions.length/3;
-
-      var map = [];
-
-      var v3 = BABYLON.Vector3;
-      var max = [];
-
-      for (var i=0; i<numberOfPoints; i++) {
-          var p = new v3(positions[i*3], positions[i*3+1], positions[i*3+2]);
-
-          if (p.y >= sizeBranch/2) {
-              max.push(p);
-          }
-
-          var found = false;
-          for (var index=0; index<map.length&&!found; index++) {
-              var array = map[index];
-              var p0 = array[0];
-              if (p0.equals (p) || (p0.subtract(p)).lengthSquared() < 0.01){
-                  array.push(i*3);
-                  found = true;
-              }
-          }
-          if (!found) {
-              var array = [];
-              array.push(p, i*3);
-              map.push(array);
-          }
-
-      }
-
-      map.forEach(function(array) {
-          var index, min = -sizeBranch/10, max = sizeBranch/10;
-          var rx = randomNumber(min,max);
-          var ry = randomNumber(min,max);
-          var rz = randomNumber(min,max);
-
-          for (index = 1; index<array.length; index++) {
-              var i = array[index];
-              positions[i] += rx;
-              positions[i+1] += ry;
-              positions[i+2] += rz;
-          }
-      });
-      leaves.setVerticesData(BABYLON.VertexBuffer.PositionKind, positions);
-      var normals = [];
-      BABYLON.VertexData.ComputeNormals(positions, indices, normals);
-      leaves.setVerticesData(BABYLON.VertexBuffer.NormalKind, normals);
-      leaves.convertToFlatShadedMesh();
-      
-      leaves.material = leafMaterial;
-      leaves.position.y = sizeTrunk+sizeBranch/2-2;
-      
-
-      var trunk = BABYLON.Mesh.CreateCylinder("trunk", sizeTrunk, radius-2<1?1:radius-2, radius, 10, 2, scene );
-      
-      trunk.position.y = (sizeBranch/2+2)-sizeTrunk/2;
-
-      trunk.material = trunkMaterial;
-      trunk.convertToFlatShadedMesh();
-      
-      leaves.parent = tree;
-      trunk.parent = tree;
-      return tree;
-
-    };
+} //===@===@===@===@===@===@===@===@===@=== END OF PROGRAM ===@===@===@===@===@===@===@===@===@===

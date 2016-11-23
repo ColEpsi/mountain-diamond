@@ -62,7 +62,7 @@ function startGame(){
   switch(stage){
   	case 1:
   		//global variables
-  var dia, rock, snowPile, snowman, guard; // MESHES
+  var dia, rock, snowPile, snowman, guard, mont; // MESHES
   var camera;
   var trees = [];
   var rocks = [];
@@ -70,6 +70,7 @@ function startGame(){
   var snowmen = [];
   var guards = [];
   var slope = 10;
+  var sides = [];
   var length = 5000, width = 500;
   var originalSpeed = 3;
   var speed = originalSpeed, steeringFactor = 1, steerCtr = 0; // variables for movement
@@ -83,8 +84,8 @@ function startGame(){
   	var snowPilePositionsZ = [-2000, -1120, 2255, 700, 1200];
 	var snowPileCtr = 0;
   // TREES
-  	var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, 217, -78, 30];
-  	var treePositionsZ = [-2000, -17590, -2100, 1592, -1345, -1001, -800, 300, 120, 1590, 2000];
+  	var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, 217, -78, 30, -200, 0, 20];
+  	var treePositionsZ = [-2000, -17590, -2100, 1592, -1345, -1001, -800, 300, 120, 1590, 2000, -950, -900, -925];
   	var treeCtr = 0;
 	// SNOWMEN
   	var snowmanPositionsX = [];
@@ -100,13 +101,14 @@ function startGame(){
   	case 2:
   		//console.log("switch = 2");
   		//global variables
-  var dia, rock, snowPile, snowman, guard; // MESHES
+  var dia, rock, snowPile, snowman, guard, mont; // MESHES
   var camera;
   var trees = [];
   var rocks = [];
   var snowPiles = [];
   var snowmen = [];
   var guards = [];
+  var sides = [];
   var slope = 10;
   var length = 5000, width = 500;
   var originalSpeed = 3;
@@ -147,7 +149,7 @@ function startGame(){
     scene.enablePhysics();
     //scene.collisionsEnabled = true;
     scene.debugLayer.show(true, camera);
-    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    //scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
     scene.fogDensity = 0.003;
     scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);
     //barva scene
@@ -157,6 +159,7 @@ function startGame(){
     camera = new BABYLON.ArcRotateCamera("camera1",  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
     camera.setPosition(new BABYLON.Vector3(0, 50, -100)); //0, 50, -100?
     camera.attachControl(canvas, true);
+    camera.checkCollisions = true;
     
     //globalna luc
     var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(1, 1, 0), scene);
@@ -174,15 +177,18 @@ function startGame(){
   
 
     // MESH IMPORTS
-    BABYLON.SceneLoader.ImportMesh("", "", "assets/diaMontiffe.babylon", scene, function (newMeshes) {
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/dia.babylon", scene, function (newMeshes) {
+
       dia = newMeshes[0];
       camera.target = dia;
-      dia.scaling.x = 0.5;
-      dia.scaling.y = 0.5;
-      dia.scaling.z = 0.5;
+      //dia.rotation.x = glMatrix.toRadian(90);
+      //dia.rotation.y = glMatrix.toRadian(-90);
+      dia.scaling.x = 10;
+      dia.scaling.y = 4;
+      dia.scaling.z = 3;
       dia.position.z = -length/2 + 100;//+ 50;
-	  dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope));
-	  dia.rotation.x = glMatrix.toRadian(slope);
+	  dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope)) + 3;
+	  dia.rotation.x = glMatrix.toRadian( -90 + slope);
 
     //dia.physicsImpostor = new BABYLON.PhysicsImpostor(dia, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 10, restitution: 0.1, friction: 0.5  }, scene);
     //dia.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 3));
@@ -191,23 +197,46 @@ function startGame(){
 
     });
 
-    BABYLON.SceneLoader.ImportMesh("", "", "assets/cube.babylon", scene, function (newMeshes) { //rock zahteven, začasno cube
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/test-kamensneg.babylon", scene, function (newMeshes) { //rock zahteven, začasno cube
       rock = newMeshes[0];
-      rock.scaling.x = 5;
-      rock.scaling.y = 5;
-      rock.scaling.z = 5;
-        for(var j = 0; j < rockPositionsX.length; j++){
+      rock.scaling.x = 10;
+      rock.scaling.y = 10;
+      rock.scaling.z = 10;
+        for(var j = 0; j < rockPositionsX.length; ){
           var newRock = rock.createInstance("i" + j);
-          newRock.position.x = rockPositionsX[rockCtr];
-          newRock.position.z = rockPositionsZ[rockCtr];
+          newRock.position.x = rockPositionsX[j];
+          newRock.position.z = rockPositionsZ[j];
           //console.log("narjen kamen " + rockCtr + " na " + newRock.position.x +", " + newRock.position.z);
-          newRock.position.y = -newRock.position.z * glMatrix.toRadian(slope);
+          newRock.position.y = -newRock.position.z * Math.tan(glMatrix.toRadian(slope)) + 6;
           newRock.rotation.x = glMatrix.toRadian(-slope);
           rocks.push(newRock);
-          rockCtr++;
+          j++;
         }
     });
-
+    	 BABYLON.SceneLoader.ImportMesh("", "", "assets/mountain1.babylon", scene, function (newMeshes) {
+    	 	newMeshes[0].scaling = new BABYLON.Vector3(55, 55, 55);
+    	 	newMeshes[0].rotation.y = glMatrix.toRadian(90);
+    	 	newMeshes[0].position = new BABYLON.Vector3(280, -75, 0);
+    	 	mont = newMeshes[0];
+    	 	for(var j = -2500; j < 2500 ;){
+    	 		 var newMont = mont.createInstance("i" + j);
+    	 		 newMont.position = new BABYLON.Vector3(280, (-j * Math.tan(glMatrix.toRadian(slope)) - 75), j);
+    	 		 sides.push(newMont);
+    	 		 j += 500;
+    	 	}
+	  });
+    	BABYLON.SceneLoader.ImportMesh("", "", "assets/mountainLeft.babylon", scene, function (newMeshes) {
+    	 	newMeshes[0].scaling = new BABYLON.Vector3(55, 55, 55);
+    	 	newMeshes[0].rotation.y = glMatrix.toRadian(90);
+    	 	newMeshes[0].position = new BABYLON.Vector3(-280, -75, 0);
+    	 	mont = newMeshes[0];
+    	 	for(var j = -2500; j < 2500 ;){
+    	 		 var newMont = mont.createInstance("i" + j);
+    	 		 newMont.position = new BABYLON.Vector3(-280, (-j * Math.tan(glMatrix.toRadian(slope)) - 75), j);
+    	 		 sides.push(newMont);
+    	 		 j += 500;
+    	 	}
+	  }); 
 	  BABYLON.SceneLoader.ImportMesh("", "", "assets/pyr.babylon", scene, function (newMeshes) {
 	    snowPile = newMeshes[0];
       	
@@ -215,13 +244,13 @@ function startGame(){
 	    snowPile.scaling.y = 0.8;
 	    snowPile.scaling.z = 0.8;
 
-       for(var j = 0; j < snowPilePositionsX.length; j++){
+       for(var j = 0; j < snowPilePositionsX.length; ){
         var newSnowPile = snowPile.createInstance("i" + j);
-        newSnowPile.position.x = snowPilePositionsX[snowPileCtr];//+ 50;
-        newSnowPile.position.z = snowPilePositionsZ[snowPileCtr];//+ 50;
+        newSnowPile.position.x = snowPilePositionsX[j];//+ 50;
+        newSnowPile.position.z = snowPilePositionsZ[j];//+ 50;
         newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) ; //-50 ker je ta objekt ogromen in dela probleme s collisions
         snowPiles.push(newSnowPile);
-        snowPileCtr++;
+        j++;
       }
       snowPile.physicsImpostor = new BABYLON.PhysicsImpostor(snowPile, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 0.0  }, scene);
 	  });
@@ -238,35 +267,36 @@ function startGame(){
     	//snowman.physicsImpostor = new BABYLON.PhysicsImpostor(snowman, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
 	  });
 
-    BABYLON.SceneLoader.ImportMesh("", "", "assets/lowpolytree.babylon", scene, function (newMeshes) { // TREEZ
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/snowtree.babylon", scene, function (newMeshes) { // TREEZ
       tree = newMeshes[0];
-      tree.scaling.x = 6;
-      tree.scaling.y = 6;
-      tree.scaling.z = 6;
-      for(var j = 0; j < treePositionsX.length; j++){
+      tree.scaling.x = 3;
+      tree.scaling.y = 3;
+      tree.scaling.z = 3;
+      for(var j = 0; j < treePositionsX.length; ){
         var newTree = tree.createInstance("i" + j);
-        newTree.position.x = treePositionsX[treeCtr];//+ 50;
-        newTree.position.z = treePositionsZ[treeCtr];//+ 50;
-        newTree.position.y = -newTree.position.z * glMatrix.toRadian(slope) + 15;
+        newTree.position.x = treePositionsX[j];//+ 50;
+        newTree.position.z = treePositionsZ[j];//+ 50;
+        newTree.position.y = -newTree.position.z * Math.tan(glMatrix.toRadian(slope)) + 4;
         //console.log("narjen drevo " + treeCtr + " na x: " + newTree.position.x +", y:" +  newTree.position.y + ", z: " +  newTree.position.z);
         trees.push(newTree);
-        treeCtr++;
+        j++;
       }
       tree.physicsImpostor = new BABYLON.PhysicsImpostor(tree, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
     });
 
-    BABYLON.SceneLoader.ImportMesh("", "", "assets/bear.babylon", scene, function (newMeshes) { //guard army
+    BABYLON.SceneLoader.ImportMesh("", "", "assets/yeti.babylon", scene, function (newMeshes) { //guard army
       guard = newMeshes[0];
-      guard.scaling = new BABYLON.Vector3(0.01, 0.01, 0.01);
-      guard.rotation.y = glMatrix.toRadian(180);
+      guard.scaling = new BABYLON.Vector3(5, 5, 5);
+      guard.rotation.y = glMatrix.toRadian(-90);
+      //guard.rotation.x = glMatrix.toRadian(slope);
 
 	  for(var g = 0; g < guardPositionsX.length; ){
         var newGuard = guard.createInstance("i" + g);
         newGuard.position.x = guardPositionsX[g];//+ 50;
         newGuard.position.z = guardPositionsZ[g];//+ 50;
-        newGuard.position.y = -newGuard.position.z * Math.tan(glMatrix.toRadian(slope)) + 15;
+        newGuard.position.y = -newGuard.position.z * Math.tan(glMatrix.toRadian(slope)) + 4;
         guards.push(newGuard);
-		guards[g].physicsImpostor = new BABYLON.PhysicsImpostor(guards[g], BABYLON.PhysicsImpostor.BoxImpostor, { mass: 10, restitution: 0.0, friction: 0.1  }, scene);
+		    //guards[g].physicsImpostor = new BABYLON.PhysicsImpostor(guards[g], BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.0, friction: 0.1  }, scene);
         g++
 		//console.log("guard " + g + " made.");
       }
@@ -274,27 +304,6 @@ function startGame(){
 
 
 	// CANVAS EDGES (left, right, bottom)
-
-    var leftWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);
-    leftWall.position.x = -width/2;
-    leftWall.position.y = 100;
-    leftWall.rotation.y = glMatrix.toRadian(-90);
-    leftWall.rotation.z = glMatrix.toRadian(-slope);
-    leftWall.scaling.x = 50;
-    leftWall.scaling.y = 2;
-    var leftWallMaterial = new BABYLON.StandardMaterial("background", scene);
-    leftWallMaterial.diffuseTexture = new BABYLON.Texture("./textures/Mountain.jpg", scene);
-    leftWall.material = leftWallMaterial;
-
-    var rightWall = BABYLON.Mesh.CreatePlane("Plane", 100, scene);;
-    rightWall.position.x = width/2;
-    rightWall.position.y = 100;
-    rightWall.scaling.x = 50;
-    rightWall.scaling.y = 2;
-    rightWall.rotation.y = glMatrix.toRadian(90);
-    rightWall.rotation.z = glMatrix.toRadian(slope);
-    rightWall.material = leftWallMaterial;
-    
     var skybox = BABYLON.Mesh.CreateBox("skyBox", 2500, scene);
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
     skyboxMaterial.backFaceCulling = false;
@@ -371,8 +380,6 @@ function startGame(){
   var accel = 0;
   var scene = createScene();
   engine.runRenderLoop(function(){
-	
-	
       if(scene.isReady()){
          if (dia.position.z > length/2){
           engine.stopRenderLoop();
@@ -386,10 +393,10 @@ function startGame(){
          	accel = 0;
          }  //starting speed
          	++accel;
-        	dia.position.z += speed;;
-        	dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope));
+        	dia.position.z += speed;
+        	dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope)) + 2;
          if (moveRight){    
-			 dia.position.x += speed / 2;
+			       dia.position.x += speed / 2;
 
              dia.rotation.y = glMatrix.toRadian(20);
 
@@ -432,10 +439,31 @@ function startGame(){
 
 //CHASE
 		for(var g = 0; g < guards.length; g++){ // s for loopom treba preverit za vsakga guarda posebi...
-				 if(Math.floor(guards[g].position.x) > Math.floor(dia.position.x)) guards[g].position.x -= 0.5;
-				 else if (Math.floor(guards[g].position.x) < Math.floor(dia.position.x)) guards[g].position.x += 0.5;
-				 guards[g].position.z += 0.5; // po gasi
-				 //če se zgodi, da pridejo pred Dio oni nadaljujejo pot, se ne ustavljajo. to OK? Drugač je tako skakajoče gibanje
+				 if(Math.floor(guards[g].position.x) > Math.floor(dia.position.x) + 10){
+          guards[g].position.x -= 0.25;
+          //guards[g].rotation.y = glMatrix.toRadian(160);
+         }
+          
+				 else if (Math.floor(guards[g].position.x) < Math.floor(dia.position.x) - 10 ){
+          guards[g].position.x += 0.25;
+         // guards[g].rotation.y = glMatrix.toRadian(-160);
+         } 
+
+         if(guards[g].position.z >= dia.position.z){
+          guards[g].position.z = dia.position.z;
+            if(guards[g].position.x > dia.position.x){
+           //   guards[g].rotation.y = glMatrix.toRadian(-30);
+            }
+            else {
+             // guards[g].rotation.y = glMatrix.toRadian(30);
+            }
+         }
+         else{
+             guards[g].position.z += speed + 0.05;
+             guards[g].position.y = -guards[g].position.z * Math.tan(glMatrix.toRadian(slope)) + 5; // po gasi
+         //če se zgodi, da pridejo pred Dio oni nadaljujejo pot, se ne ustavljajo. to OK? Drugač je tako skakajoče gibanje
+         }
+				
 
 //guard intersects				
 			 if(dia.intersectsMesh(guards[g], false)){
@@ -455,8 +483,9 @@ function startGame(){
 			 
 			trees.forEach(function(tree){
 				if(guards[g].intersectsMesh(tree, false)){
-					//console.warn("MAN DOWN. Disposed of guard " + g);
+					console.warn("MAN DOWN. Disposed of guard " + g);
 					guards[g].dispose();
+
 				} 
 			 });
 			 

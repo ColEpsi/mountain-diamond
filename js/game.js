@@ -149,7 +149,7 @@ function startGame(){
     scene.enablePhysics();
     //scene.collisionsEnabled = true;
     scene.debugLayer.show(true, camera);
-    //scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
     scene.fogDensity = 0.003;
     scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);
     //barva scene
@@ -237,18 +237,19 @@ function startGame(){
     	 		 j += 500;
     	 	}
 	  }); 
-	  BABYLON.SceneLoader.ImportMesh("", "", "assets/pyr.babylon", scene, function (newMeshes) {
+	  BABYLON.SceneLoader.ImportMesh("", "", "assets/block.babylon", scene, function (newMeshes) {
 	    snowPile = newMeshes[0];
       	
-	    snowPile.scaling.x = 0.8;
-	    snowPile.scaling.y = 0.8;
-	    snowPile.scaling.z = 0.8;
+	    snowPile.scaling.x = 100;
+	    snowPile.scaling.y = 100;
+	    snowPile.scaling.z = 100;
+	    snowPile.position.y = 10;
 
        for(var j = 0; j < snowPilePositionsX.length; ){
         var newSnowPile = snowPile.createInstance("i" + j);
         newSnowPile.position.x = snowPilePositionsX[j];//+ 50;
         newSnowPile.position.z = snowPilePositionsZ[j];//+ 50;
-        newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) ; //-50 ker je ta objekt ogromen in dela probleme s collisions
+        newSnowPile.position.y += -newSnowPile.position.z * glMatrix.toRadian(slope) ; //-50 ker je ta objekt ogromen in dela probleme s collisions
         snowPiles.push(newSnowPile);
         j++;
       }
@@ -286,15 +287,17 @@ function startGame(){
 
     BABYLON.SceneLoader.ImportMesh("", "", "assets/yeti.babylon", scene, function (newMeshes) { //guard army
       guard = newMeshes[0];
-      guard.scaling = new BABYLON.Vector3(5, 5, 5);
+      guard.scaling = new BABYLON.Vector3(2, 5, 5);
+      //guard.rotation.x = glMatrix.toRadian(0);
       guard.rotation.y = glMatrix.toRadian(-90);
-      //guard.rotation.x = glMatrix.toRadian(slope);
+      
 
 	  for(var g = 0; g < guardPositionsX.length; ){
         var newGuard = guard.createInstance("i" + g);
         newGuard.position.x = guardPositionsX[g];//+ 50;
         newGuard.position.z = guardPositionsZ[g];//+ 50;
         newGuard.position.y = -newGuard.position.z * Math.tan(glMatrix.toRadian(slope)) + 4;
+       // newGuard.rotation.x = glMatrix.toRadian(slope);
         guards.push(newGuard);
 		    //guards[g].physicsImpostor = new BABYLON.PhysicsImpostor(guards[g], BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.0, friction: 0.1  }, scene);
         g++
@@ -421,7 +424,7 @@ function startGame(){
 			 });
 			 
 			 snowPiles.forEach(function(snowPile){
-				if(dia.intersectsMesh(snowPile, true)){
+				if(dia.intersectsMesh(snowPile, false)){
 					//console.warn("collision!!");
 					engine.stopRenderLoop();
 					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();  

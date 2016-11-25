@@ -1,13 +1,13 @@
 // Get the canvas element from our HTML below
-
 document.addEventListener("DOMContentLoaded", function () {
-	var animationCanvas = document.getElementById("animationCanvas");
-	animationCanvasContext = animationCanvas.getContext("2d");
-	animationCanvas.style.display='none';
+  var animationCanvas = document.getElementById("animationCanvas");
+  animationCanvasContext = animationCanvas.getContext("2d");
+  document.getElementById('animationCanvas').setAttribute('width', screen.availWidth);
+  document.getElementById('animationCanvas').setAttribute('height', screen.availHeight);
+  animationCanvas.style.display='inline-block';
 
-  if (BABYLON.Engine.isSupported()) {
-    startGame();
-  }
+  startScreen();
+
 }, false);
 
 var randomNumber = function (min, max) {
@@ -18,61 +18,6 @@ var randomNumber = function (min, max) {
           return ((random * (max - min)) + min);
 };
 
-function changeStage(){
-	stage++;
-	//console.log("here goes some stage transition...   render: " + renderCanvas.style.display + ", animation: " +animationCanvas.style.display);
-	toggleCanvas();
-
-	animationCanvasContext.beginPath();
-	animationCanvasContext.arc(95,50,40,0,2*Math.PI);
-	//animationCanvasContext.font = "50px Comic Sans MS";
-	//animationCanvasContext.fillStyle = "red";
-	//animationCanvasContext.textAlign = "center";
-	//animationCanvasContext.fillText("Stage Cleared", 1908/2, 699/2);
-	animationCanvasContext.stroke();
-
-	setTimeout(function(){
-						 toggleCanvas();
-						 startGame();
-						 }, 5000);
-}
-
-function toggleCanvas(){
-	if(renderCanvas.style.display=='inline-block'){
-		console.log("render je inline-block");
-	renderCanvas.style.display='none';
-    animationCanvas.style.display='inline-block'; 
-  }else{
-  	console.log("animation je inline-block");
-    animationCanvas.style.display='none';
-    renderCanvas.style.display='inline-block';
-  }
-  console.log("toggled canvas...");
-}
-
-  
-/*
-function spawnGuard(positionX, z, scene){
-	BABYLON.SceneLoader.ImportMesh("", "", "assets/yeti.babylon", scene, function (newMeshes) { //guard army
-      guard = newMeshes[0];
-      guard.scaling = new BABYLON.Vector3(2, 5, 5);
-      guard.rotation.y = glMatrix.toRadian(-90);
-      
-
-	  for(var g = 0; g < positionX.length; ){
-        var newGuard = guard.createInstance("i" + g);
-        newGuard.position.x = positionX[g];//+ 50;
-        newGuard.position.z = z;//+ 50;
-        newGuard.position.y = -newGuard.position.z * Math.tan(glMatrix.toRadian(slope)) + 4;
-       // newGuard.rotation.x = glMatrix.toRadian(slope);
-        guards.push(newGuard);
-		    //guards[g].physicsImpostor = new BABYLON.PhysicsImpostor(guards[g], BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.0, friction: 0.1  }, scene);
-        g++
-		//console.log("guard " + g + " made.");
-      }
-    });
-}
-*/
 var engine;
 var stage = 1;
 
@@ -105,8 +50,8 @@ function startGame(){
   	var rockPositionsZ = [2400, -2200, -2, -790, -900, -1300, -10, -1111, -1039, -2000, -1530, -1450];
 	var rockCtr = 0;
 	// SNOW PILES
-  	var snowPilePositionsX = [175, 20, -50, -155, 250];
-  	var snowPilePositionsZ = [-2000, -1120, 2255, 700, 1200];
+  	var snowPilePositionsX = [200, -80, 0, 155, -5];
+  	var snowPilePositionsZ = [-2000, -1300, 450, 1750, 2300];
 	var snowPileCtr = 0;
   // TREES
   	var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, 217, -78, 30, -200, 0, 20];
@@ -174,7 +119,7 @@ function startGame(){
     var scene = new BABYLON.Scene(engine);
     scene.enablePhysics();
     //scene.collisionsEnabled = true;
-    scene.debugLayer.show(true, camera);
+  //  scene.debugLayer.show(true, camera);
     scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
     scene.fogDensity = 0.003;
     scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);
@@ -193,7 +138,7 @@ function startGame(){
 
     gunshot = new BABYLON.Sound("gunshot", "./sounds/shotgun.wav", scene);
     nomercy = new BABYLON.Sound("eaten", "./sounds/nomercy.wav", scene);
-    //background = new BABYLON.Sound("background", "./sounds/Escape_Looping.mp3", scene, null, {loop: true, autoplay: true});
+    background = new BABYLON.Sound("background", "./sounds/Escape_Looping.mp3", scene, null, {loop: true, autoplay: true});
 
     var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
     groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
@@ -220,10 +165,8 @@ function startGame(){
 	  dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope)) + 3;
 	  dia.rotation.x = glMatrix.toRadian( -90 + slope);
 
-    //dia.physicsImpostor = new BABYLON.PhysicsImpostor(dia, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 10, restitution: 0.1, friction: 0.5  }, scene);
-    //dia.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 3));
-    //dia.physicsImpostor.setAngularVelocity(new BABYLON.Quaternion(0,0,0,0));
-    ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.0}, scene);
+    
+    //ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.5, friction: 0.0}, scene);
 
     });
 
@@ -270,9 +213,9 @@ function startGame(){
 	  BABYLON.SceneLoader.ImportMesh("", "", "assets/block.babylon", scene, function (newMeshes) {
 	    snowPile = newMeshes[0];
       	
-	    snowPile.scaling.x = 100;
-	    snowPile.scaling.y = 100;
-	    snowPile.scaling.z = 100;
+	    snowPile.scaling.x = 150;
+	    snowPile.scaling.y = 150;
+	    snowPile.scaling.z = 150;
 	    snowPile.position.y = 10;
 	    snowPiles.push(snowPile);
        for(var j = 0; j < snowPilePositionsX.length; ){
@@ -283,7 +226,7 @@ function startGame(){
         snowPiles.push(newSnowPile);
         j++;
       }
-      snowPile.physicsImpostor = new BABYLON.PhysicsImpostor(snowPile, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 0.0  }, scene);
+      //snowPile.physicsImpostor = new BABYLON.PhysicsImpostor(snowPile, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 0.0  }, scene);
 	  });
 
 	  BABYLON.SceneLoader.ImportMesh("", "", "assets/snowmanstl.babylon", scene, function (newMeshes) {
@@ -312,7 +255,7 @@ function startGame(){
         trees.push(newTree);
         j++;
       }
-      tree.physicsImpostor = new BABYLON.PhysicsImpostor(tree, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
+     // tree.physicsImpostor = new BABYLON.PhysicsImpostor(tree, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 2, restitution: 0.1, friction: 0.0  }, scene);
     });
 
     BABYLON.SceneLoader.ImportMesh("", "", "assets/yeti.babylon", scene, function (newMeshes) { //guard army
@@ -354,7 +297,7 @@ function startGame(){
     ramp.position.x = 0;
     ramp.position.z = 1100;
     ramp.position.y = -ramp.position.z * glMatrix.toRadian(slope);
-    ramp.physicsImpostor = new BABYLON.PhysicsImpostor(ramp, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 1.5  }, scene);
+    //ramp.physicsImpostor = new BABYLON.PhysicsImpostor(ramp, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.1, friction: 1.5  }, scene);
     
     return scene;
   };
@@ -450,7 +393,7 @@ function startGame(){
 					//console.warn("collision!!");
 					gunshot.play();
 					engine.stopRenderLoop();
-					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();
+					gameOver();
 				} 
 			 });
 			 
@@ -458,7 +401,7 @@ function startGame(){
 				if(dia.intersectsMesh(snowPile, false)){
 					//console.warn("collision!!");
 					engine.stopRenderLoop();
-					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();  
+					gameOver(); 
 			    }
 			 });
 			 
@@ -466,33 +409,33 @@ function startGame(){
 				if(dia.intersectsMesh(rock, false)){
 					//console.warn("collision!!");
 					engine.stopRenderLoop();
-					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();          
+					gameOver();         
 			    }
 			 });
 //dia intersects
 
 //CHASE
 		for(var g = 0; g < guards.length; g++){ // s for loopom treba preverit za vsakga guarda posebi...
-			if(guards[g].position.z < dia.position.z - 10){
+			if(guards[g].position.z < dia.position.z + 10){
 
 
-			if(Math.floor(guards[g].position.x) > Math.floor(dia.position.x) + 5){
-          	guards[g].position.x -= 0.25;
-          //guards[g].rotation.y = glMatrix.toRadian(160);
-         }
-          
-		else if (Math.floor(guards[g].position.x) < Math.floor(dia.position.x) - 5 ){
-          guards[g].position.x += 0.25;
-         // guards[g].rotation.y = glMatrix.toRadian(-160);
-         } 
+    			if(Math.floor(guards[g].position.x) > Math.floor(dia.position.x) + 5){
+              	guards[g].position.x -= 0.25;
+              //guards[g].rotation.y = glMatrix.toRadian(160);
+             }
+              
+    		else if (Math.floor(guards[g].position.x) < Math.floor(dia.position.x) - 5 ){
+              guards[g].position.x += 0.25;
+             // guards[g].rotation.y = glMatrix.toRadian(-160);
+             } 
 
-         if(guards[g].position.z >= dia.position.z && guards[g].position.z < dia.position.z + 2){
-          guards[g].position.z = dia.position.z;
-         }
-         else{
-             guards[g].position.z += speed + 0.075;
-             guards[g].position.y = -guards[g].position.z * Math.tan(glMatrix.toRadian(slope)) + 5; // po gasi
-         //če se zgodi, da pridejo pred Dio oni nadaljujejo pot, se ne ustavljajo. to OK? Drugač je tako skakajoče gibanje
+             if(guards[g].position.z >= dia.position.z && guards[g].position.z < dia.position.z + 2){
+              guards[g].position.z = dia.position.z;
+             }
+             else{
+                 guards[g].position.z += speed + 0.075;
+                 guards[g].position.y = -guards[g].position.z * Math.tan(glMatrix.toRadian(slope)) + 5; // po gasi
+             //če se zgodi, da pridejo pred Dio oni nadaljujejo pot, se ne ustavljajo. to OK? Drugač je tako skakajoče gibanje
          }
 			}	
 
@@ -501,9 +444,7 @@ function startGame(){
 				//console.warn("captured by guard " + g);
 				nomercy.play();
 				engine.stopRenderLoop();
-				if(window.confirm("BEAR POOP\nPLAY AGAIN?") == true){
-				  startGame();
-				}
+        gameOver();
 			 }
 			 
 			rocks.forEach(function(rock){

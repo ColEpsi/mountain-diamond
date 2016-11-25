@@ -50,6 +50,29 @@ function toggleCanvas(){
   console.log("toggled canvas...");
 }
 
+  
+/*
+function spawnGuard(positionX, z, scene){
+	BABYLON.SceneLoader.ImportMesh("", "", "assets/yeti.babylon", scene, function (newMeshes) { //guard army
+      guard = newMeshes[0];
+      guard.scaling = new BABYLON.Vector3(2, 5, 5);
+      guard.rotation.y = glMatrix.toRadian(-90);
+      
+
+	  for(var g = 0; g < positionX.length; ){
+        var newGuard = guard.createInstance("i" + g);
+        newGuard.position.x = positionX[g];//+ 50;
+        newGuard.position.z = z;//+ 50;
+        newGuard.position.y = -newGuard.position.z * Math.tan(glMatrix.toRadian(slope)) + 4;
+       // newGuard.rotation.x = glMatrix.toRadian(slope);
+        guards.push(newGuard);
+		    //guards[g].physicsImpostor = new BABYLON.PhysicsImpostor(guards[g], BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0.0, friction: 0.1  }, scene);
+        g++
+		//console.log("guard " + g + " made.");
+      }
+    });
+}
+*/
 var engine;
 var stage = 1;
 
@@ -74,7 +97,7 @@ function startGame(){
   var slope = 10;
   var sides = [];
   var length = 5000, width = 500;
-  var originalSpeed = 3;
+  var originalSpeed = 5;
   var speed = originalSpeed, steeringFactor = 1, steerCtr = 0; // variables for movement
   // OBSTACLE POSITIONS
   	// ROCKS
@@ -94,8 +117,8 @@ function startGame(){
   	var snowmanPositionsZ = [];
   	var snowmanCtr = 0;
 	// GUARDS
-  	var guardPositionsX = [200, 100, -150, 20];
-  	var guardPositionsZ = [-2450, -2450, -2450, -2450];
+  	var guardPositionsX = [200, 100, -150, 20, -150, 0, 150];
+  	var guardPositionsZ = [-2450, -2450, -2450, -2450, -1700, -1700, -1700];
   	var guardCtr = 0;
 
   	break;
@@ -114,7 +137,7 @@ function startGame(){
   var sides = [];
   var slope = 10;
   var length = 5000, width = 500;
-  var originalSpeed = 3;
+  var originalSpeed = 5;
   var speed = originalSpeed, steeringFactor = 1, steerCtr = 0; // variables for movement
   // OBSTACLE POSITIONS
   	// ROCKS
@@ -134,8 +157,8 @@ function startGame(){
   	var snowmanPositionsZ = [];
   	var snowmanCtr = 0;
 	// GUARDS
-  	var guardPositionsX = [50, 200, -150, 20];
-  	var guardPositionsZ = [-2450, -2450, -2450, -2450];
+  	var guardPositionsX = [-150, 0, 150, 300, -150, 0, 150];
+  	var guardPositionsZ = [-2450, -2450, -2450, -2450, -1700, -1700, -1700];
   	var guardCtr = 0;
   	break;
   }
@@ -170,7 +193,7 @@ function startGame(){
 
     gunshot = new BABYLON.Sound("gunshot", "./sounds/shotgun.wav", scene);
     nomercy = new BABYLON.Sound("eaten", "./sounds/nomercy.wav", scene);
-    background = new BABYLON.Sound("background", "./sounds/Escape_Looping.mp3", scene, null, {loop: true, autoplay: true});
+    //background = new BABYLON.Sound("background", "./sounds/Escape_Looping.mp3", scene, null, {loop: true, autoplay: true});
 
     var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
     groundMaterial.diffuseTexture = new BABYLON.Texture("./textures/snow2.jpg", scene);
@@ -251,7 +274,7 @@ function startGame(){
 	    snowPile.scaling.y = 100;
 	    snowPile.scaling.z = 100;
 	    snowPile.position.y = 10;
-
+	    snowPiles.push(snowPile);
        for(var j = 0; j < snowPilePositionsX.length; ){
         var newSnowPile = snowPile.createInstance("i" + j);
         newSnowPile.position.x = snowPilePositionsX[j];//+ 50;
@@ -367,8 +390,7 @@ function startGame(){
 
     window.addEventListener('keyup', function(event) {
     	switch (event.keyCode) {
-        case 65: //a
-        	console.log(steerCtr);
+        case 65: 
           moveLeft = false;
           dia.rotation.y = glMatrix.toRadian(steerCtr);
           steerCtr = 0;
@@ -396,19 +418,19 @@ function startGame(){
           engine.stopRenderLoop();
           camera.dispose();
           scene.dispose();
-          console.log("scene disposed.");
+          //console.log("scene disposed.");
           changeStage();
          }
+
          if (accel == 250){
-         	speed += 0.5;
+         	speed += 0.25;
          	accel = 0;
          }  //starting speed
          	++accel;
         	dia.position.z += speed;
         	dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope)) + 2;
          if (moveRight){    
-			       dia.position.x += speed / 2;
-
+			 dia.position.x += speed / 2;
              dia.rotation.y = glMatrix.toRadian(20);
 
          }
@@ -442,7 +464,7 @@ function startGame(){
 			 
 			 rocks.forEach(function(rock){
 				if(dia.intersectsMesh(rock, false)){
-					console.warn("collision!!");
+					//console.warn("collision!!");
 					engine.stopRenderLoop();
 					if(window.confirm("GAME OVER\nPLAY AGAIN?") == true) startGame();          
 			    }
@@ -451,31 +473,28 @@ function startGame(){
 
 //CHASE
 		for(var g = 0; g < guards.length; g++){ // s for loopom treba preverit za vsakga guarda posebi...
-				 if(Math.floor(guards[g].position.x) > Math.floor(dia.position.x) + 10){
-          guards[g].position.x -= 0.25;
+			if(guards[g].position.z < dia.position.z - 10){
+
+
+			if(Math.floor(guards[g].position.x) > Math.floor(dia.position.x) + 5){
+          	guards[g].position.x -= 0.25;
           //guards[g].rotation.y = glMatrix.toRadian(160);
          }
           
-				 else if (Math.floor(guards[g].position.x) < Math.floor(dia.position.x) - 10 ){
+		else if (Math.floor(guards[g].position.x) < Math.floor(dia.position.x) - 5 ){
           guards[g].position.x += 0.25;
          // guards[g].rotation.y = glMatrix.toRadian(-160);
          } 
 
-         if(guards[g].position.z >= dia.position.z){
+         if(guards[g].position.z >= dia.position.z && guards[g].position.z < dia.position.z + 2){
           guards[g].position.z = dia.position.z;
-            if(guards[g].position.x > dia.position.x){
-           //   guards[g].rotation.y = glMatrix.toRadian(-30);
-            }
-            else {
-             // guards[g].rotation.y = glMatrix.toRadian(30);
-            }
          }
          else{
-             guards[g].position.z += speed + 0.05;
+             guards[g].position.z += speed + 0.075;
              guards[g].position.y = -guards[g].position.z * Math.tan(glMatrix.toRadian(slope)) + 5; // po gasi
          //če se zgodi, da pridejo pred Dio oni nadaljujejo pot, se ne ustavljajo. to OK? Drugač je tako skakajoče gibanje
          }
-				
+			}	
 
 //guard intersects				
 			 if(dia.intersectsMesh(guards[g], false)){
@@ -496,7 +515,7 @@ function startGame(){
 			 
 			trees.forEach(function(tree){
 				if(guards[g].intersectsMesh(tree, false)){
-					console.warn("MAN DOWN. Disposed of guard " + g);
+					//console.warn("MAN DOWN. Disposed of guard " + g);
 					guards[g].dispose();
 
 				} 

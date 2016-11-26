@@ -190,8 +190,6 @@ function startGame() {
     //------------------------------------------------------------------------------------
     var createScene = function() {
         var scene = new BABYLON.Scene(engine);
-        scene.enablePhysics();
-        scene.debugLayer.show(true, camera);
         scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
         scene.fogDensity = 0.003;
         scene.fogColor = new BABYLON.Color3(0.862745, 0.862745, 0.862745);

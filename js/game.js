@@ -28,33 +28,26 @@ function startGame() {
             var guards = [];
             var slope = 10;
             var sides = [];
-            var length = 5000,
+            var length = 5000;
                 width = 500;
             var originalSpeed = 5;
-            var speed = originalSpeed,
-                steeringFactor = 1,
-                steerCtr = 0; // variables for movement
+            var speed = originalSpeed;
             // OBSTACLE POSITIONS
             // ROCKS
             var rockPositionsX = [-190, -80, 25, -8, 116, -16, 103, -200, -170, -50, -175, -60, 90, -30, -200, -100, -190, -50, -50, -190, -180, -50, -160];
             var rockPositionsZ = [-2200, -2100, -1903, -790, -850, 1999, -10, 0, 1430, 1800, 250, 438, 697, 1700, 1600, 1000, 1000, 1240, -650, -1850, 450, 300, 900];
-            var rockCtr = 0;
             // SNOW PILES
             var snowPilePositionsX = [200, -80, 0, 155, -175];
             var snowPilePositionsZ = [-2000, -1300, 450, 1750, 2300];
-            var snowPileCtr = 0;
             // TREES
             var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, -78, 30, -200, 0, 20, -180, 170, 90, 175, -60, 200, 225, -120, -80, -170, -150, -225, -140, -80, -100];
             var treePositionsZ = [-2000, -1759, -2100, 1592, -1345, -1001, -800, 300, 120, 2000, -950, -900, -925, 2200, -1500, 1130, 1290, 1005, 2000, 90, 130, 290, 80, -400, 200, -400, 1200, 1230, 1111];
-            var treeCtr = 0;
             // SNOWMEN
             var snowmanPositionsX = [90];
             var snowmanPositionsZ = [2450];
-            var snowmanCtr = 0;
             // GUARDS
             var guardPositionsX = [-75, 20, -50, 20, 175, -40, 230];
             var guardPositionsZ = [-2450, -2450, -1100, 600, -1850, 600, 1100];
-            var guardCtr = 0;
             break;
         case 2:
             //global variables
@@ -68,33 +61,26 @@ function startGame() {
             var guards = [];
             var sides = [];
             var slope = 10;
-            var length = 5000,
+            var length = 5000;
                 width = 500;
             var originalSpeed = 5;
-            var speed = originalSpeed,
-                steeringFactor = 1,
-                steerCtr = 0; // variables for movement
+            var speed = originalSpeed;
             // OBSTACLE POSITIONS
             // ROCKS
             var rockPositionsX = [-200, -100, 50, -180, -100, 50, 155, 200, 210, 220, 200, -50, -210, 0, -90, -75, 20, 50, 100, 170, 30, -40];
             var rockPositionsZ = [-2000, -2200, -2300, -1600, -1200, -800, -400, -300, 230, -1630, -1630, 500, 500, 650, 850, 1400, 1300, 1150, 1600, 1700, 2010, 2295];
-            var rockCtr = 0;
             // SNOW PILES
             var snowPilePositionsX = [0, 100, -155, 155, -160];
             var snowPilePositionsZ = [-1800, -1250, 0, 700, 1800];
-            var snowPileCtr = 0;
             // TREES
             var treePositionsX = [165, 175, -205, -10, 6, 14, 3, 20, -150, -140, 90, 175, 125, -125, -210, -90, 140, 75, 100, 75];
             var treePositionsZ = [-100, 110, -1650, -1450, -666, -555, 470, 700, 1500, 700, 1400, 2000, 200, -1122, -950, -1010, 2350, 2300, 1750, 2010];
-            var treeCtr = 0;
             // SNOWMEN
             var snowmanPositionsX = [150];
             var snowmanPositionsZ = [2450];
-            var snowmanCtr = 0;
             // GUARDS
             var guardPositionsX = [-120, -150, 200, -25, 0, -55, 160, -99];
             var guardPositionsZ = [-2450, -2460, -1000, -1650, 150, 150, 850, 1950];
-            var guardCtr = 0;
             break;
         case 3:
             //global variables
@@ -108,41 +94,34 @@ function startGame() {
             var guards = [];
             var slope = 10;
             var sides = [];
-            var length = 5000,
+            var length = 5000;
                 width = 500;
             var originalSpeed = 5;
-            var speed = originalSpeed,
-                steeringFactor = 1,
-                steerCtr = 0; // variables for movement
+            var speed = originalSpeed;
             // OBSTACLE POSITIONS
             // ROCKS
             var rockPositionsX = [-120, 180, -150, 90, 70, -170, 75, -40, 60, 120, 160, 0, 34, -50, 60, 34, -20,
                 52, -40, 75, 180, -150
             ];
             var rockPositionsZ = [-2100, -1300, -30, 1600, 500, 1200, 2300, 2100, 1550, 1000, 0, -250, -500, 800, -1200, 350, 80, -800, -350, -650, 250, 380];
-            var rockCtr = 0;
             // SNOW PILES
             var snowPilePositionsX = [50, -70, -180, 10];
             var snowPilePositionsZ = [-110, -1250, 250, 1500];
-            var snowPileCtr = 0;
             // TREES
             var treePositionsX = [80, 190, 200, 190, 210, -190, -150, 0, -40, 80, 160, -75,
                 0, 20, 190, -60, -120, 100, -75, 40, 60, -70, -50, -120,
                 90, 110, -80, 140, -20, 0, 100, -75, -95, -120, 90, -67, 84, 63, -30, -150, 90, -75, -110, 30, 0, 170, 96, -60, 45, 0
             ];
-            var treePositionsZ = [-1300, -1300, -50, -30, -30, -100, -120, -1200, -1100, -1250, -900, -800 - 2000, -1500, -1400, -2200, -2000, -1700, -1800, -1650, -2000, -900, -700, -500,
+            var treePositionsZ = [-1300, -1300, -50, -30, -30, -100, -120, -1200, -1100, -1250, -900, -800, -2000, -1500, -1400, -2200, -2000, -1700, -1800, -1650, -2000, -900, -700, -500,
                 0, 20, 90, 100, 200, 250, 300, 450, 400, 600, 700, 850, 1000, 1100, 1250,
-                1500, 1550, 1600, 1700, 1850, 2000, 2100, 2340, 2370, 2340, 2400, 2345
+                1500, 1550, 1600, 1700, 1850, 2000, 2100, 2340, 2370, 2340, 2400
             ];
-            var treeCtr = 0;
             // SNOWMEN
             var snowManPositionsX = [0, 30, -20];
             var snowManPositionsZ = [-2000, 800, 800];
-            var snowmanCtr = 0;
             // GUARDS
-            var guardPositionsX = [-70, -50, 0, 20, 100, -75, 50, 25, 75, 0, 25, 0];
-            var guardPositionsZ = [-1080, -1080, -1995, -1495, -1695, -1795, 20, 20, 20, 1550, 1550, 2005];
-            var guardCtr = 0;
+            var guardPositionsX = [-70, -50, 0, 20, 100, -75, 50, 25, 75, 0, 25, 170, -150];
+            var guardPositionsZ = [-1120, -1120, -1995, -1495, -1695, -1795, 20, 20, 20, 1575, 1575, 2005, 1505];
             break;
         case 4:
             //global variables
@@ -156,33 +135,26 @@ function startGame() {
             var guards = [];
             var slope = 10;
             var sides = [];
-            var length = 5000,
+            var length = 5000;
                 width = 500;
             var originalSpeed = 5;
-            var speed = originalSpeed,
-                steeringFactor = 1,
-                steerCtr = 0; // variables for movement
+            var speed = originalSpeed;
             // OBSTACLE POSITIONS
             // ROCKS
             var rockPositionsX = [60, -30, -40, -80, -81, -85, -90, -102, 30, 38, 50, 200];
             var rockPositionsZ = [2400, -2200, -2, -790, -900, -1300, -10, -1111, -1039, -2000, -1530, -1450];
-            var rockCtr = 0;
             // SNOW PILES
             var snowPilePositionsX = [200, -80, 0, 155, -5];
             var snowPilePositionsZ = [-2000, -1300, 450, 1750, 2300];
-            var snowPileCtr = 0;
             // TREES
             var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, 217, -78, 30, -200, 0, 20];
             var treePositionsZ = [-2000, -17590, -2100, 1592, -1345, -1001, -800, 300, 120, 1590, 2000, -950, -900, -925];
-            var treeCtr = 0;
             // SNOWMEN
             var snowmanPositionsX = [];
             var snowmanPositionsZ = [];
-            var snowmanCtr = 0;
             // GUARDS
             var guardPositionsX = [200, 100, -150, 20, -150, 0, 150];
             var guardPositionsZ = [-2450, -2450, -2450, -2450, -1700, -1700, -1700];
-            var guardCtr = 0;
             break;
     }
     // -------------------------------------------------------------
@@ -197,7 +169,6 @@ function startGame() {
         camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
         camera.setPosition(new BABYLON.Vector3(0, 50, -100)); //0, 50, -100?
         camera.attachControl(canvas, true);
-        camera.checkCollisions = true;
         var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(1, 1, 0), scene);
         var light1 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(-1, 1, 0), scene);
         deathByTree = new BABYLON.Sound("deathByTree", "./sounds/Crash_07.wav", scene);
@@ -250,7 +221,7 @@ function startGame() {
             newMeshes[0].rotation.y = glMatrix.toRadian(90);
             newMeshes[0].position = new BABYLON.Vector3(280, -75, 0);
             mont = newMeshes[0];
-            for (var j = -2500; j < 2500;) {
+            for (var j = -2300; j < 2500;) {
                 var newMont = mont.createInstance("i" + j);
                 newMont.position = new BABYLON.Vector3(280, (-j * Math.tan(glMatrix.toRadian(slope)) - 75), j);
                 sides.push(newMont);
@@ -262,7 +233,7 @@ function startGame() {
             newMeshes[0].rotation.y = glMatrix.toRadian(90);
             newMeshes[0].position = new BABYLON.Vector3(-280, -75, 0);
             mont = newMeshes[0];
-            for (var j = -2500; j < 2500;) {
+            for (var j = -2300; j < 2500;) {
                 var newMont = mont.createInstance("i" + j);
                 newMont.position = new BABYLON.Vector3(-280, (-j * Math.tan(glMatrix.toRadian(slope)) - 75), j); 
                 sides.push(newMont);
@@ -274,13 +245,15 @@ function startGame() {
             snowPile.scaling.x = 200;
             snowPile.scaling.y = 200;
             snowPile.scaling.z = 200;
-            snowPile.position.y = 10;
+            snowPile.position.x = snowPilePositionsX[0];
+            snowPile.position.z = snowPilePositionsZ[0];
+            snowPile.position.y = -snowPile.position.z * glMatrix.toRadian(slope) + 10; 
             snowPiles.push(snowPile);
-            for (var j = 0; j < snowPilePositionsX.length;) {
+            for (var j = 1; j < snowPilePositionsX.length;) {
                 var newSnowPile = snowPile.createInstance("i" + j);
                 newSnowPile.position.x = snowPilePositionsX[j];
                 newSnowPile.position.z = snowPilePositionsZ[j]; 
-                newSnowPile.position.y += -newSnowPile.position.z * glMatrix.toRadian(slope); 
+                newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) + 10; 
                 snowPiles.push(newSnowPile);
                 j++;
             }
@@ -348,11 +321,9 @@ function startGame() {
     window.addEventListener('keydown', function(event) {
         switch (event.keyCode) {
             case 65:
-                dia.rotation.y = glMatrix.toRadian(steerCtr);
                 moveLeft = true;
                 break;
             case 68:
-                dia.rotation.y = glMatrix.toRadian(steerCtr);
                 moveRight = true;
                 break;
             case 83:
@@ -367,20 +338,15 @@ function startGame() {
         switch (event.keyCode) {
             case 65:
                 moveLeft = false;
-                dia.rotation.y = glMatrix.toRadian(steerCtr);
-                steerCtr = 0;
                 break;
             case 68: 
                 moveRight = false;
-                dia.rotation.y = glMatrix.toRadian(steerCtr);
-                steerCtr = 0;
                 break;
             case 83:
                 speed = originalSpeed;
-                steerCtr = 0;
                 break;
         }
-    }, false);
+    }, false);    
     //ANIMATION ============================================================================================== CHANGE STAGE
     var accel = 0;
     var scene = createScene();
@@ -394,7 +360,7 @@ function startGame() {
             }
             dia.position.z += speed;
             dia.position.y = -dia.position.z * Math.tan(glMatrix.toRadian(slope)) + 2;
-            if (dia.position.x > -220 && dia.position.x < 220) {
+            if (dia.position.x > -225 && dia.position.x < 225) {
                 if (moveRight) {
                     dia.position.x += speed / 2;
                     dia.rotation.y = glMatrix.toRadian(20);
@@ -406,7 +372,7 @@ function startGame() {
                 if (!moveLeft && !moveRight) {
                     dia.rotation.y = glMatrix.toRadian(0);
                 }
-            } else if (dia.position.x <= -220) {
+            } else if (dia.position.x <= -225) {
                 if (moveRight) {
                     dia.position.x += speed / 2;
                     dia.rotation.y = glMatrix.toRadian(20);
@@ -414,7 +380,7 @@ function startGame() {
                 if (!moveLeft && !moveRight) {
                     dia.rotation.y = glMatrix.toRadian(0);
                 }
-            } else if (dia.position.x >= 220) {
+            } else if (dia.position.x >= 225) {
                 if (moveLeft) {
                     dia.position.x -= speed / 2;
                     dia.rotation.y = glMatrix.toRadian(-20);

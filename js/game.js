@@ -24,7 +24,6 @@ function startGame() {
             var trees = [];
             var rocks = [];
             var snowPiles = [];
-            var snowmen = [];
             var guards = [];
             var slope = 10;
             var sides = [];
@@ -42,9 +41,6 @@ function startGame() {
             // TREES
             var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, -78, 30, -200, 0, 20, -180, 170, 90, 175, -60, 200, 225, -120, -80, -170, -150, -225, -140, -80, -100];
             var treePositionsZ = [-2000, -1759, -2100, 1592, -1345, -1001, -800, 300, 120, 2000, -950, -900, -925, 2200, -1500, 1130, 1290, 1005, 2000, 90, 130, 290, 80, -400, 200, -400, 1200, 1230, 1111];
-            // SNOWMEN
-            var snowmanPositionsX = [90];
-            var snowmanPositionsZ = [2450];
             // GUARDS
             var guardPositionsX = [-75, 20, -50, 20, 175, -40, 230];
             var guardPositionsZ = [-2450, -2450, -1100, 600, -1850, 600, 1100];
@@ -57,7 +53,6 @@ function startGame() {
             var trees = [];
             var rocks = [];
             var snowPiles = [];
-            var snowmen = [];
             var guards = [];
             var sides = [];
             var slope = 10;
@@ -75,11 +70,8 @@ function startGame() {
             // TREES
             var treePositionsX = [165, 175, -205, -10, 6, 14, 3, 20, -150, -140, 90, 175, 125, -125, -210, -90, 140, 75, 100, 75];
             var treePositionsZ = [-100, 110, -1650, -1450, -666, -555, 470, 700, 1500, 700, 1400, 2000, 200, -1122, -950, -1010, 2350, 2300, 1750, 2010];
-            // SNOWMEN
-            var snowmanPositionsX = [150];
-            var snowmanPositionsZ = [2450];
             // GUARDS
-            var guardPositionsX = [-120, -150, 200, -25, 0, -55, 160, -99];
+            var guardPositionsX = [ -120,  -150,   200,   -25, -20, -55, 160, -99];
             var guardPositionsZ = [-2450, -2460, -1000, -1650, 150, 150, 850, 1950];
             break;
         case 3:
@@ -90,7 +82,6 @@ function startGame() {
             var trees = [];
             var rocks = [];
             var snowPiles = [];
-            var snowmen = [];
             var guards = [];
             var slope = 10;
             var sides = [];
@@ -103,7 +94,7 @@ function startGame() {
             var rockPositionsX = [-120, 180, -150, 90, 70, -170, 75, -40, 60, 120, 160, 0, 34, -50, 60, 34, -20,
                 52, -40, 75, 180, -150
             ];
-            var rockPositionsZ = [-2100, -1300, -30, 1600, 500, 1200, 2300, 2100, 1550, 1000, 0, -250, -500, 800, -1200, 350, 80, -800, -350, -650, 250, 380];
+            var rockPositionsZ = [-2100, -1300, -30, 1600, 500, 1200, 2300, 2100, 1550, 1000, 0, -250, -500, 800, -1200, 350, 55, -800, -350, -650, 250, 380];
             // SNOW PILES
             var snowPilePositionsX = [50, -70, -180, 10];
             var snowPilePositionsZ = [-110, -1250, 250, 1500];
@@ -116,9 +107,6 @@ function startGame() {
                 0, 20, 90, 100, 200, 250, 300, 450, 400, 600, 700, 850, 1000, 1100, 1250,
                 1500, 1550, 1600, 1700, 1850, 2000, 2100, 2340, 2370, 2340, 2400
             ];
-            // SNOWMEN
-            var snowManPositionsX = [0, 30, -20];
-            var snowManPositionsZ = [-2000, 800, 800];
             // GUARDS
             var guardPositionsX = [-70, -50, 0, 20, 100, -75, 50, 25, 75, 0, 25, 170, -150];
             var guardPositionsZ = [-1120, -1120, -1995, -1495, -1695, -1795, 20, 20, 20, 1575, 1575, 2005, 1505];
@@ -131,7 +119,6 @@ function startGame() {
             var trees = [];
             var rocks = [];
             var snowPiles = [];
-            var snowmen = [];
             var guards = [];
             var slope = 10;
             var sides = [];
@@ -141,20 +128,17 @@ function startGame() {
             var speed = originalSpeed;
             // OBSTACLE POSITIONS
             // ROCKS
-            var rockPositionsX = [60, -30, -40, -80, -81, -85, -90, -102, 30, 38, 50, 200];
-            var rockPositionsZ = [2400, -2200, -2, -790, -900, -1300, -10, -1111, -1039, -2000, -1530, -1450];
+            var rockPositionsX = [   75,   115, 205, 105,    0,  -50,  -60, -70, -30, -90, -150,  -90, -70];
+            var rockPositionsZ = [-1330, -1430, 350, 395, 1300, 1500, 2200, 580, 880, 2110, 2280, 2290, 2150];
             // SNOW PILES
-            var snowPilePositionsX = [200, -80, 0, 155, -5];
-            var snowPilePositionsZ = [-2000, -1300, 450, 1750, 2300];
+            var snowPilePositionsX = [ -155, -115,    180, 0,  130, -130, 90];
+            var snowPilePositionsZ = [-2000, -1300, -1000, 0, 1000, 1700, 2100];
             // TREES
-            var treePositionsX = [78, -50, 50, 150, 30, 100, -100, 60, -210, 217, -78, 30, -200, 0, 20];
-            var treePositionsZ = [-2000, -17590, -2100, 1592, -1345, -1001, -800, 300, 120, 1590, 2000, -950, -900, -925];
-            // SNOWMEN
-            var snowmanPositionsX = [];
-            var snowmanPositionsZ = [];
+            var treePositionsX = [   55,    99,    61,  -25,   40,  -20,   35,  -17,   30,    5, -199, -100, -187, -190, -170, -150, -150,  50, -100, -100,  110];
+            var treePositionsZ = [-1900, -1680, -1180, -850, -850, -750, -750, -690, -690, -565, -300, -300, -120,  160,  210,  280,  600, 750, 1200, 1400, 1700];
             // GUARDS
-            var guardPositionsX = [200, 100, -150, 20, -150, 0, 150];
-            var guardPositionsZ = [-2450, -2450, -2450, -2450, -1700, -1700, -1700];
+            var guardPositionsX = [  200,   175,  -115,  -200,  180,   0, -25,  25, -50,  55,  130,  110, 90];
+            var guardPositionsZ = [-2450, -2450, -1150, -1150, -850, 130, 130, 130, 130, 130, 1180, 1160, 1150];
             break;
     }
     // -------------------------------------------------------------
@@ -168,7 +152,6 @@ function startGame() {
         scene.clearColor = new BABYLON.Color3(.5, .5, .5);
         camera = new BABYLON.ArcRotateCamera("camera1", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
         camera.setPosition(new BABYLON.Vector3(0, 50, -100)); //0, 50, -100?
-        camera.attachControl(canvas, true);
         var light0 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(1, 1, 0), scene);
         var light1 = new BABYLON.HemisphericLight("Hemi0", new BABYLON.Vector3(-1, 1, 0), scene);
         deathByTree = new BABYLON.Sound("deathByTree", "./sounds/Crash_07.wav", scene);
@@ -187,7 +170,7 @@ function startGame() {
         groundMaterial.emissiveColor = new BABYLON.Color3
         groundMaterial.diffuseTexture.uScale = 5.0; //Repeat 5 times on the Vertical Axes
         groundMaterial.diffuseTexture.vScale = 10.0; //Repeat 10 times on the Horizontal Axes
-        var ground = BABYLON.Mesh.CreateGround("ground", width, length, 2, scene);
+        var ground = BABYLON.Mesh.CreateGround("ground", width, length + 1000, 2, scene);
         ground.material = groundMaterial;
         ground.rotation.x = glMatrix.toRadian(slope);
         // MESH IMPORTS
@@ -247,33 +230,16 @@ function startGame() {
             snowPile.scaling.z = 200;
             snowPile.position.x = snowPilePositionsX[0];
             snowPile.position.z = snowPilePositionsZ[0];
-            snowPile.position.y = -snowPile.position.z * glMatrix.toRadian(slope) + 10; 
+            snowPile.position.y = -snowPile.position.z * glMatrix.toRadian(slope) + 13; 
             snowPiles.push(snowPile);
             for (var j = 1; j < snowPilePositionsX.length;) {
                 var newSnowPile = snowPile.createInstance("i" + j);
                 newSnowPile.position.x = snowPilePositionsX[j];
                 newSnowPile.position.z = snowPilePositionsZ[j]; 
-                newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) + 10; 
+                newSnowPile.position.y = -newSnowPile.position.z * glMatrix.toRadian(slope) + 13; 
                 snowPiles.push(newSnowPile);
                 j++;
             }
-        });
-        BABYLON.SceneLoader.ImportMesh("", "", "assets/snowmanstl.babylon", scene, function(newMeshes) {
-            snowman = newMeshes[0];
-            snowman.scaling.x = 0.4;
-            snowman.scaling.y = 0.4;
-            snowman.scaling.z = 0.4;
-            snowman.position.x = snowmanPositionsX[snowmanCtr]; 
-            snowman.position.z = snowmanPositionsZ[snowmanCtr]; 
-            snowman.position.y = (-snowman.position.z * glMatrix.toRadian(slope)) + 17;
-            for(var j = 0; j < snowManPositionsX.length; ){
-                var newSnowman = snowman.createInstance("i" + j);
-                newSnowman.position.x = snowManPositionsX[j];//+ 50;
-                newSnowman.position.z = snowManPositionsZ[j];//+ 50;
-                newSnowman.position.y = -newSnowman.position.z * Math.tan(glMatrix.toRadian(slope)) + 17;
-                snowmen.push(newSnowman);
-                j++;
-      }
         });
         BABYLON.SceneLoader.ImportMesh("", "", "assets/snowtree.babylon", scene, function(newMeshes) { 
             tree = newMeshes[0];
@@ -399,7 +365,7 @@ function startGame() {
                 }
             }
             for (var i = 0; i < snowPiles.length; i++) {
-                if (dia.intersectsMesh(snowPiles[i], false)) {
+                if (dia.intersectsMesh(snowPiles[i], true)) {
                     deathByTree.play();
                     engine.stopRenderLoop();
                     bgMusic.stop();

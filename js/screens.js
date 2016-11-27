@@ -29,7 +29,7 @@ function changeStage() {
             toggleCanvas();
             animationCanvasContext.clearRect(0, 0, animationCanvas.width, animationCanvas.height);
             startGame();
-        }, 1600);
+        }, 1000);
     }
 }
 
@@ -77,18 +77,3 @@ var randomNumber = function(min, max) {
     return ((random * (max - min)) + min);
 };
 var gameOverTitles = ["That was not good. It was bad, actually.", "That was terrible.", "That was pathetic.", "That's all you got?", "That was OK. If you are 11 months old.", "Even my grandma is better than you.", "Shameful.", "Are you tired already?", "Is it too hard for you?", "No diamond for you.", "Unlucky. Or maybe incompetent...", "Poor. That's all I can say.", "My instructions rate is 10€ per hour.", "Try harder.", "Definitely in the top 5 worst performances I've seen.", "Are you going for the blooper reel?", "This will be the opening to my next fail compilation.", "This is clearly too hard for you. Would you prefer some Lego bricks instead?", "I can do better blindfolded.", "Maybe we should've just created an empty plane.", "No skillz on you.", "You have to AVOID the obstacles."];
-
-function playIntroVideo() {
-    var videoIntro = new Image();
-    videoIntro.src = "animation/intro2.mp4";
-    videoIntro.onload = function() {
-        videoIntro.onloadeddata = videoIntro.play;
-        videoIntro.load();
-        animationCanvasContext.drawImage(videoIntro, 0, 0, animationCanvas.width, animationCanvas.height);
-        animationCanvasContext.font = "20px Copperplate gothic";
-        animationCanvasContext.textAlign = "center";
-        animationCanvasContext.fillStyle = "red";
-        animationCanvasContext.fillText("vid.", (animationCanvas.width / 2 - 10), 200);
-        vidFinished = true;
-    }
-}
